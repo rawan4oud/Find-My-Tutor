@@ -1,0 +1,106 @@
+from flask import Flask, request, render_template
+import mysql.connector
+
+app = Flask(__name__)
+
+
+# Define database connection parameters
+conn = mysql.connector.connect(
+    host="localhost",
+    database="fmt",
+    user="root",
+    password="root"
+)
+
+# Define a function to insert a new student record into the database
+def insert_student(fname, lname, email, password, city, country):
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO student (first_name, last_name, email, password, city, country) VALUES (%s, %s, %s, %s, %s, %s)",
+        (fname, lname, email, password, city, country)
+    )
+    conn.commit()
+    cur.close()
+
+def insert_tutor(fname, lname, email, password, city, country):
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO tutor (first_name, last_name, email, password, city, country) VALUES (%s, %s, %s, %s, %s, %s)",
+        (fname, lname, email, password, city, country)
+    )
+    conn.commit()
+    cur.close()
+
+
+
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template("home.html")
+
+
+# Define a route for the registration form
+@app.route('/signup.html', methods=['GET', 'POST'])
+def signup_form():
+    if request.method == 'POST':
+        # Get form data
+        fname = request.form['fname']
+        lname = request.form['lname']
+        email = request.form['email']
+        password = request.form['pwd']
+        city = request.form['city']
+        country = request.form['country']
+       # user = request.form['user']
+        # Insert data into database
+        insert_student(fname, lname, email, password, city, country)
+        return render_template('loggedin.html')
+    else:
+        return render_template('signup.html')
+
+
+@app.route('/becomeatutor.html', methods=['GET', 'POST'])
+def signup_form2():
+    if request.method == 'POST':
+        # Get form data
+        fname = request.form['fname']
+        lname = request.form['lname']
+        email = request.form['email']
+        password = request.form['pwd']
+        city = request.form['city']
+        country = request.form['country']
+       # user = request.form['user']
+        # Insert data into database
+        insert_tutor(fname, lname, email, password, city, country)
+        return render_template('home.html')
+    else:
+        return render_template('becomeatutor.html')
+
+
+
+
+@app.route('/search.html', methods=['GET', 'POST'])
+def search():
+    return render_template('search.html')
+
+# Define route for search results page
+@app.route('/results.html', methods=['GET', 'POST'])
+def results():
+    if request.method == 'POST':
+        #Get search query from form
+        query = request.form['query']
+
+        # Perform search in database
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT first_name, bio FROM tutor WHERE first_name LIKE %s OR bio LIKE %s",
+            ('%' + query + '%', '%' + query + '%')
+        )
+        results = cur.fetchall()
+        cur.close()
+
+        # Render search results template with results
+        return render_template('results.html', results=results)
+
+
+if __name__ == '__main__':
+    app.run()

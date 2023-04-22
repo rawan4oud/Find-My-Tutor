@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<form method="POST">
+<body>
+    <h1>Search Results</h1>
+    {% if results %}
+        {% for result in results %}
+            <div>
+                <h2>{{ result[0] }}</h2>
+                <p>{{ result[1] }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</form>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Find My Tutor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<form method="post">
+<body>
+  <div class="container">
+    <div class="image1">
+      <img src="static/tutor.jpg" alt="Your Image">
+    </div>
+    <div class="wrapper">
+      <div class="registration_form">
+        <form>
+          <div class="form_wrap">
+            <div class="input_grp">
+              <div class="input_wrap">
+                <label for="fname">First Name</label>
+                <input type="text" name="fname">
+              </div>
+              <div class="input_wrap">
+                <label for="lname">Last Name</label>
+                <input type="text" name="lname">
+              </div>
+            </div>
+            <div class="input_wrap">
+              <label for="email">Email Address</label>
+              <input type="text" name="email">
+            </div>
+			<div class="input_wrap">
+              <label for="password">Password</label>
+              <input type="password" name="pwd">
+            </div>
+            <div class="input_wrap">
+              <label for="city">City</label>
+              <input type="text" name="city">
+            </div>
+            <div class="input_wrap">
+              <label for="country">Country</label>
+              <input type="text" name="country">
+            </div>
+            <div class="input_wrap">
+              <label>I am a:</label>
+              <ul>
+                <li>
+                  <label class="radio_wrap">
+                    <input type="radio" name="user" value="student" class="input_radio" checked>
+                    <span>Student</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="radio_wrap">
+                    <input type="radio" name="user" value="parent" class="input_radio">
+                    <span>Parent</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <div class="input_wrap">
+              <input type="submit" value="Register Now" class="submit_btn">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</form>
+</html>
