@@ -9,18 +9,26 @@ conn = mysql.connector.connect(
     host="localhost",
     database="fmt",
     user="root",
-    password="root"
+    password=""
 )
 
+
 # Define a function to insert a new student record into the database
-def insert_student(fname, lname, email, password, city, country):
+def insert_student(fname, lname, email, password, age, gender, contact, image, languages):
     cur = conn.cursor()
+    fullname = f"{fname} {lname}"
     cur.execute(
-        "INSERT INTO student (first_name, last_name, email, password, city, country) VALUES (%s, %s, %s, %s, %s, %s)",
-        (fname, lname, email, password, city, country)
+        "INSERT INTO user (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+        (email, password, image, fullname, age, gender, languages, contact)
+    )
+    cur.execute(
+        "INSERT INTO student (username, password, picture, fullname, age, gender, languages, contact, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (email, password, image, fullname, age, gender, languages, contact, email, password)
     )
     conn.commit()
     cur.close()
+
+
 
 def insert_tutor(fname, lname, email, password, city, country):
     cur = conn.cursor()
@@ -47,15 +55,23 @@ def signup_form():
         fname = request.form['fname']
         lname = request.form['lname']
         email = request.form['email']
-        password = request.form['pwd']
-        city = request.form['city']
-        country = request.form['country']
-       # user = request.form['user']
+        password = request.form['password']
+        gender = request.form['gender']
+        age = request.form['age']
+        contact = request.form['contact']
+        languages = request.form.getlist('languages')
+        image = request.files['image']
+
+        # Save image file
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         # Insert data into database
-        insert_student(fname, lname, email, password, city, country)
+        insert_student(fname, lname, email, password, age, gender, contact, filename, languages)
         return render_template('loggedin.html')
     else:
         return render_template('signup.html')
+
 
 
 @app.route('/becomeatutor.html', methods=['GET', 'POST'])

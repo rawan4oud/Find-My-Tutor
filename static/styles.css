@@ -25,11 +25,14 @@ nav {
   background-color: transparent;
   position: absolute;
   z-index: 1;
+  width: 100%;
+  text-align: center;
 }
 
 nav ul {
-  display: flex;
+  display: inline-flex;
   list-style: none;
+  justify-content: center;
 }
 
 nav ul li {
@@ -47,36 +50,6 @@ nav ul li a {
 nav ul li a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
-
-nav2 {
-  background-color: transparent;
-  position: absolute;
-  z-index: 1;
-}
-
-nav2 ul {
-  display: flex;
-  list-style: none;
-}
-
-
-nav2 ul li {
-  margin: 0 95px;
-}
-
-
-nav2 ul li a {
-  display: block;
-  padding: 30px;
-  text-decoration: none;
-  color: #ffff;
-  mix-blend-mode: normal;
-}
-
-nav2 ul li a:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
 
 .head_container {
   position: relative;
@@ -142,5 +115,27 @@ nav2 ul li a:hover {
   cursor: pointer;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
 
+.custom-button {
+  background-color: #0d6ad7;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0 10px;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.custom-button:hover {
+  background-color: #0a58b0;
+}
 
