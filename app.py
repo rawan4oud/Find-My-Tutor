@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template
 import mysql.connector
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 
@@ -12,18 +14,20 @@ conn = mysql.connector.connect(
     password=""
 )
 
+app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
 
 # Define a function to insert a new student record into the database
 def insert_student(fname, lname, email, password, age, gender, contact, image, languages):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
+    languages_str = ', '.join(languages) 
     cur.execute(
-        "INSERT INTO user (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-        (email, password, image, fullname, age, gender, languages, contact)
+        "INSERT INTO USER (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+        (email, password, image, fullname, age, gender, languages_str, contact)
     )
     cur.execute(
-        "INSERT INTO student (username, password, picture, fullname, age, gender, languages, contact, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (email, password, image, fullname, age, gender, languages, contact, email, password)
+        "INSERT INTO STUDENT (username, password, picture, fullname, age, gender, languages, contact, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (email, password, image, fullname, age, gender, languages_str, contact, email, password)
     )
     conn.commit()
     cur.close()
@@ -81,7 +85,7 @@ def signup_form2():
         fname = request.form['fname']
         lname = request.form['lname']
         email = request.form['email']
-        password = request.form['pwd']
+        password = request.form['password']
         city = request.form['city']
         country = request.form['country']
        # user = request.form['user']
