@@ -17,7 +17,7 @@ conn = mysql.connector.connect(
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
 
 # Define a function to insert a new student record into the database
-def insert_student(fname, lname, email, password, age, gender, contact, image, languages):
+def insert_student(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
     languages_str = ', '.join(languages) 
@@ -26,8 +26,8 @@ def insert_student(fname, lname, email, password, age, gender, contact, image, l
         (email, password, image, fullname, age, gender, languages_str, contact)
     )
     cur.execute(
-        "INSERT INTO STUDENT (username, password, picture, fullname, age, gender, languages, contact, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (email, password, image, fullname, age, gender, languages_str, contact, email, password)
+        "INSERT INTO STUDENT (username, password, picture, fullname, age, gender, languages, interests, contact, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (email, password, image, fullname, age, gender, languages_str, newinterest, contact, email, password)
     )
     conn.commit()
     cur.close()
@@ -93,6 +93,7 @@ def login():
 
 
 # Define a route for the registration form
+
 @app.route('/signup.html', methods=['GET', 'POST'])
 def signup_form():
     if request.method == 'POST':
@@ -106,17 +107,33 @@ def signup_form():
         contact = request.form['contact']
         languages = request.form.getlist('languages')
         image = request.files['image']
+        newinterest = request.form['newinterest']
 
+            
+        # Handle multiple interests
+        if 'interests' in request.form:
+            interests = request.form.getlist('interests')
+            interests.append(newinterest)
+            interests_str = ','.join(interests)
+        else:
+            interests_str = newinterest
         # Save image file
         filename = secure_filename(image.filename)
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # Insert data into database
-        insert_student(fname, lname, email, password, age, gender, contact, filename, languages)
+        insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
         username = fname + ' ' + lname
         return render_template('loggedin.html', username=username)
-    else:
-        return render_template('signup.html')
+    else:  
+        cursor = conn.cursor()
+       # execute SQL query to select interests from the STUDENT table
+        cursor.execute('SELECT interests FROM STUDENT')
+        # retrieve all the interests and store them in a list
+        interests_list = [row[0] for row in cursor.fetchall() if row[0] is not None]
+        # remove commas and create a set of unique interests
+        interests = set(','.join(interests_list).split(','))
+        return render_template('signup.html',interests=interests)
 
 
 
@@ -133,6 +150,7 @@ def signup_form2():
         contact = request.form['contact']
         languages = request.form.getlist('languages')
         image = request.files['image']
+        
 
         # Save image file
         filename = secure_filename(image.filename)
