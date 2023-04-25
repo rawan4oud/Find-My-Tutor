@@ -7,16 +7,16 @@
   <title>Find My Tutor</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
-<form method="post">
 <body>
   <div class="container">
-    <div class="image2">
+    <div class="image1">
       <img src="static/becomeatutor.jpg" alt="Your Image">
     </div>
     <div class="wrapper">
       <div class="registration_form">
-        <form>
+        <form method="post" enctype="multipart/form-data">
           <div class="form_wrap">
+            <h2>Teach Anything Today!</h2>
             <div class="input_grp">
               <div class="input_wrap">
                 <label for="fname">First Name</label>
@@ -31,20 +31,41 @@
               <label for="email">Email Address</label>
               <input type="text" name="email">
             </div>
-			<div class="input_wrap">
+            <div class="input_wrap">
               <label for="password">Password</label>
-              <input type="password" name="pwd">
+              <input type="password" name="password">
             </div>
             <div class="input_wrap">
-              <label for="city">City</label>
-              <input type="text" name="city">
+              <label for="gender">Gender</label>
+              <input type="text" name="gender">
+            </div>
+            <div class="input_grp">
+              <div class="input_wrap">
+                <label for="age">Age</label>
+                <input type="number" name="age" min="0">
+              </div>
+              <div class="input_wrap" style="margin-left: 10px;">
+                <label for="contact">Contact</label>
+                <input type="tel" name="contact">
+              </div>
             </div>
             <div class="input_wrap">
-              <label for="country">Country</label>
-              <input type="text" name="country">
+              <label for="languages">Languages</label>
+              <select name="languages" multiple>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Chinese">Chinese</option>
+                <!-- Add more language options here -->
+              </select>
             </div>
             <div class="input_wrap">
-              <input type="submit" value="Tutor Now" class="submit_btn">
+              <label for="image">Image</label>
+              <input type="file" name="image">
+            </div>
+            <div class="input_wrap">
+              <input type="submit" value="Register Now" class="submit_btn">
             </div>
           </div>
         </form>
@@ -52,5 +73,4 @@
     </div>
   </div>
 </body>
-</form>
 </html>

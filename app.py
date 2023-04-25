@@ -50,6 +50,39 @@ def insert_tutor(fname, lname, email, password, city, country):
 def home():
     return render_template("home.html")
 
+@app.route('/login.html', methods=['GET', 'POST'])
+def login():
+    error = None
+    fullname = None
+    conn = mysql.connector.connect(
+        host="localhost",
+        database="fmt",
+        user="root",
+        password=""
+    )
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        c = conn.cursor()
+        c.execute("SELECT * FROM USER WHERE username=%s AND password=%s", (email, password))
+        user = c.fetchone()
+        if user is None:
+            error = 'Invalid username or password'
+        else:
+            fullname_query = "SELECT fullname FROM USER WHERE username=%s AND password=%s"
+            c.execute(fullname_query, (email, password))
+            fullname = c.fetchone()[0]
+            tutor_query = "SELECT * FROM TUTOR WHERE username=%s AND password=%s"
+            c.execute(tutor_query, (email, password))
+            tutor = c.fetchone()
+            if tutor is not None:
+                return render_template('loggedintutor.html', username=fullname)
+            else:
+                return render_template('loggedin.html', username=fullname)
+        conn.commit()
+        conn.close()
+    return render_template('login.html', error=error)
+
 
 # Define a route for the registration form
 @app.route('/signup.html', methods=['GET', 'POST'])
@@ -72,7 +105,8 @@ def signup_form():
 
         # Insert data into database
         insert_student(fname, lname, email, password, age, gender, contact, filename, languages)
-        return render_template('loggedin.html')
+        username = fname + ' ' + lname
+        return render_template('loggedin.html', username=username)
     else:
         return render_template('signup.html')
 
@@ -86,12 +120,20 @@ def signup_form2():
         lname = request.form['lname']
         email = request.form['email']
         password = request.form['password']
-        city = request.form['city']
-        country = request.form['country']
-       # user = request.form['user']
+        gender = request.form['gender']
+        age = request.form['age']
+        contact = request.form['contact']
+        languages = request.form.getlist('languages')
+        image = request.files['image']
+
+        # Save image file
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         # Insert data into database
-        insert_tutor(fname, lname, email, password, city, country)
-        return render_template('home.html')
+        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages)
+        username = fname + ' ' + lname
+        return render_template('loggedintutor.html', username=username)
     else:
         return render_template('becomeatutor.html')
 
