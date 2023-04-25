@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    console.log('{{ interests }}');
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -59,6 +62,19 @@
                 <option value="Chinese">Chinese</option>
                 <!-- Add more language options here -->
               </select>
+            </div>
+            <div class="input_wrap">
+              <label for="interests">Interests</label>
+              <select name="interests" multiple>
+                {% for interest in interests %}
+                  <option value="{{ interest }}">{{ interest }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="input_wrap">
+              <label for="new_interest">Add New Interest</label>
+              <p>Please write it in the following format : dance, music, anime</p>
+              <input type="text" name="newinterest">
             </div>
             <div class="input_wrap">
               <label for="image">Image</label>
