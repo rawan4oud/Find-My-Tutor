@@ -11,7 +11,7 @@ conn = mysql.connector.connect(
     host="localhost",
     database="fmt",
     user="root",
-    password=""
+    password="root"
 )
 
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
@@ -58,6 +58,14 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
 def home():
     return render_template("home.html")
 
+@app.route('/loggedin.html', methods=['GET', 'POST'])
+def signout():
+    return render_template("home.html")
+
+@app.route('/loggedintutor.html', methods=['GET', 'POST'])
+def signouttutor():
+    return render_template("home.html")
+
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
     error = None
@@ -66,7 +74,7 @@ def login():
         host="localhost",
         database="fmt",
         user="root",
-        password=""
+        password="root"
     )
     if request.method == 'POST':
         email = request.form['email']
