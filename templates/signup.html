@@ -64,17 +64,12 @@
               </select>
             </div>
             <div class="input_wrap">
-              <label for="interests">Interests</label>
+              <label for="interests">Here are our given subjects</label>
               <select name="interests" multiple>
                 {% for interest in interests %}
                   <option value="{{ interest }}">{{ interest }}</option>
                 {% endfor %}
               </select>
-            </div>
-            <div class="input_wrap">
-              <label for="new_interest">Add New Interest</label>
-              <p>Please write it in the following format : dance, music, anime</p>
-              <input type="text" name="newinterest">
             </div>
             <div class="input_wrap">
               <label for="image">Image</label>
