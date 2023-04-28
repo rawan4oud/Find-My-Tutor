@@ -2,43 +2,44 @@
 <html>
 
 <head>
-  <title>Find My Tutor</title>
-  <link rel="stylesheet" type="text/css" href="static/styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find My Tutor</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <header>
+<header>
     <nav>
-      <ul class="nav-menu">
-        <li> <a href="home.html" class="nav-link">Home</a> </li>
-        <li> <a href="login.html" class="nav-link">Login</a> </li>
-        <li> <a href="#aboutus" class="nav-link">About Us</a> </li>
-        <li> <a href="#contactus" class="nav-link">Contact Us</a> </li>
-      </ul>
+        <div class="logo"></div>
+        <ul class="nav-menu">
+            <li><a href="home.html" class="nav-link">Home</a></li>
+            <li><a href="login.html" class="nav-link">Login</a></li>
+            <li><a href="#aboutus" class="nav-link">About Us</a></li>
+            <li><a href="#contactus" class="nav-link">Contact Us</a></li>
+        </ul>
     </nav>
-  </header>
+</header>
 
-  <section class="home" id="home">
+<section class="home" id="home">
     <div class="head_container">
-      <div class="box">
-        <div class="text">
-          <h1>Welcome to Find My Tutor</h1>
-          <p>Get personalized tutoring for any subject, any time </p>
+        <div class="box">
+            <div class="text">
+                <h1>Welcome to Find My Tutor</h1>
+                <p>Get personalized tutoring for any subject, any time </p>
+            </div>
+            <form action="/results.html" method="POST">
+                <div class="search-box">
+                    <input type="text" placeholder="Search..." name="query">
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+            <div class="button-container">
+                <button class="custom-button" onclick="location.href='becomeatutor.html'">Become a Tutor</button>
+                <button class="custom-button" onclick="location.href='signup.html'">Become a Student</button>
+            </div>
         </div>
-        <form action="/results.html" method="POST">
-          <div class="search-box">
-            <input type="text" placeholder="Search..." name="query">
-            <button type="submit">Search</button>
-          </div>
-        </form>
-        <div class="button-container">
-          <button class="custom-button" onclick="location.href='becomeatutor.html'">Become a Tutor</button>
-          <button class="custom-button" onclick="location.href='signup.html'">Become a Student</button>
-        </div>
-      </div>
     </div>
-  </section>
+</section>
 
 </body>
 

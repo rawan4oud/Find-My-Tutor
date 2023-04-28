@@ -139,3 +139,13 @@ nav ul li a:hover {
   background-color: #0a58b0;
 }
 
+.logo {
+  width: 100px;
+  height: 70px;
+  background-image: url("logo-no-background.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  float: left;
+  margin-left: 40px;
+}

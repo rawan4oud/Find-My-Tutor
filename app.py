@@ -11,16 +11,17 @@ conn = mysql.connector.connect(
     host="localhost",
     database="fmt",
     user="root",
-    password=""
+    password="root"
 )
 
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
+
 
 # Define a function to insert a new student record into the database
 def insert_student(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
-    languages_str = ', '.join(languages) 
+    languages_str = ', '.join(languages)
     cur.execute(
         "INSERT INTO USER (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         (email, password, image, fullname, age, gender, languages_str, contact)
@@ -33,11 +34,10 @@ def insert_student(fname, lname, email, password, age, gender, contact, image, l
     cur.close()
 
 
-
 def insert_tutor(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
-    languages_str = ', '.join(languages) 
+    languages_str = ', '.join(languages)
     cur.execute(
         "INSERT INTO USER (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         (email, password, image, fullname, age, gender, languages_str, contact)
@@ -45,28 +45,33 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
     cur.execute(
         "INSERT INTO TUTOR (username, password, picture, fullname, age, gender, subjects, contact, useruser, userpass, bio, education, yearsofexperience, location, availability, pricerange, deliverymethod, avgrating, cv, docs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
-        email, password, image, fullname, age, gender, newinterest, contact, email, password, "", "", 0, "", "", "", "",
-        0.0, "", "")
+            email, password, image, fullname, age, gender, newinterest, contact, email, password, "", "", 0, "", "", "",
+            "",
+            0.0, "", "")
     )
     conn.commit()
     cur.close()
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template("home.html")
 
+
 @app.route('/logout')
 def logout():
     session.clear()
-    return  render_template("home.html")
+    return render_template("home.html")
+
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
     conn = mysql.connector.connect(
-    host="localhost",
-    database="fmt",
-    user="root",
-    password=""
-)
+        host="localhost",
+        database="fmt",
+        user="root",
+        password="root"
+    )
     error = None
     fullname = None
     if request.method == 'POST':
@@ -96,13 +101,15 @@ def login():
         conn.close()
     return render_template('login.html', error=error)
 
+
 @app.route('/loggedin.html')
 def loggedin():
     if 'username' in session and session['user_type'] == 'student':
         username = session['username']
         return render_template('loggedin.html', username=username)
     else:
-       return render_template('login.html')
+        return render_template('login.html')
+
 
 @app.route('/loggedintutor.html')
 def loggedintutor():
@@ -129,13 +136,11 @@ def signup_form():
         languages = request.form.getlist('languages')
         image = request.files['image']
 
-
-            
         # Handle multiple interests
         if 'interests' in request.form:
             interests = request.form.getlist('interests')
             interests_str = ','.join(interests)
-        
+
         # Save image file
         filename = secure_filename(image.filename)
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -144,16 +149,15 @@ def signup_form():
         insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
         username = fname + ' ' + lname
         return render_template('loggedin.html', username=username)
-    else:  
+    else:
         cursor = conn.cursor()
-       # execute SQL query to select interests from the STUDENT table
+        # execute SQL query to select interests from the STUDENT table
         cursor.execute('SELECT subjects FROM TUTOR')
         # retrieve all the interests and store them in a list
         interests_list = [row[0] for row in cursor.fetchall() if row[0] is not None]
         # remove commas and create a set of unique interests
         interests = set(','.join(interests_list).split(','))
-        return render_template('signup.html',interests=interests)
-
+        return render_template('signup.html', interests=interests)
 
 
 @app.route('/becomeatutor.html', methods=['GET', 'POST'])
@@ -171,7 +175,6 @@ def signup_form2():
         image = request.files['image']
         newinterest = request.form['newinterest']
 
-            
         # Handle multiple interests
         if 'interests' in request.form:
             interests = request.form.getlist('interests')
@@ -185,38 +188,36 @@ def signup_form2():
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # Insert data into database
-        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages,interests_str)
+        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
         username = fname + ' ' + lname
         return render_template('loggedintutor.html', username=username)
-    else:  
+    else:
         cursor = conn.cursor()
-       # execute SQL query to select interests from the STUDENT table
+        # execute SQL query to select interests from the STUDENT table
         cursor.execute('SELECT subjects FROM TUTOR')
         # retrieve all the interests and store them in a list
         interests_list = [row[0] for row in cursor.fetchall() if row[0] is not None]
         # remove commas and create a set of unique interests
         interests = set(','.join(interests_list).split(','))
-        return render_template('becomeatutor.html',interests=interests)
-
-
-
+        return render_template('becomeatutor.html', interests=interests)
 
 
 @app.route('/search.html', methods=['GET', 'POST'])
 def search():
     return render_template('search.html')
 
+
 # Define route for search results page
 @app.route('/results.html', methods=['GET', 'POST'])
 def results():
     if request.method == 'POST':
-        #Get search query from form
+        # Get search query from form
         query = request.form['query']
 
         # Perform search in database
         cur = conn.cursor()
         cur.execute(
-            "SELECT first_name, bio FROM tutor WHERE first_name LIKE %s OR bio LIKE %s",
+            "SELECT fullname, bio FROM tutor WHERE fullname LIKE %s OR bio LIKE %s",
             ('%' + query + '%', '%' + query + '%')
         )
         results = cur.fetchall()

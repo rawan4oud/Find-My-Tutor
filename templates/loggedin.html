@@ -2,41 +2,41 @@
 <html>
 
 <head>
-  <title>Find My Tutor</title>
-  <link rel="stylesheet" type="text/css" href="static/styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find My Tutor</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <header>
+<header>
     <nav>
-      <ul class="nav-menu">
-        <li> <a href="#aboutus" class="nav-link">About Us</a> </li>
-        <li> <a href="#contactus" class="nav-link">Contact Us</a> </li>
-        <li> <a href="studentprofile.html?username={{ session['username'] }}" class="nav-link">My Profile</a> </li>
-        <li> <a href="{{ url_for('logout') }}" class="nav-link">Logout</a> </li>
-      </ul>
+        <ul class="nav-menu">
+            <li><a href="#aboutus" class="nav-link">About Us</a></li>
+            <li><a href="#contactus" class="nav-link">Contact Us</a></li>
+            <li><a href="studentprofile.html?username={{ session['username'] }}" class="nav-link">My Profile</a></li>
+            <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
+        </ul>
     </nav>
-  </header>
+</header>
 
-  <section class="home" id="home">
+<section class="home" id="home">
     <div class="head_container">
-      <div class="box">
-        <div class="text">
-          {% if 'username' in session %}
-          <h1>Welcome, {{ session['username'] }}!</h1>
-          {% endif %}
-          <p>Search for your own personal tutor</p>
+        <div class="box">
+            <div class="text">
+                {% if 'username' in session %}
+                <h1>Welcome, {{ session['username'] }}!</h1>
+                {% endif %}
+                <p>Search for your own personal tutor</p>
+            </div>
+            <form action="/results.html" method="POST">
+                <div class="search-box">
+                    <input type="text" placeholder="Search..." name="query">
+                    <button type="submit">Search</button>
+                </div>
+            </form>
         </div>
-        <form action="/results.html" method="POST">
-          <div class="search-box">
-            <input type="text" placeholder="Search..." name="query">
-            <button type="submit">Search</button>
-          </div>
-        </form>
-
     </div>
-  </section>
+</section>
 
 </body>
 
