@@ -1,17 +1,17 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-
+app.secret_key = 'mysecretkey'
 
 # Define database connection parameters
 conn = mysql.connector.connect(
     host="localhost",
     database="fmt",
     user="root",
-    password="root"
+    password=""
 )
 
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
@@ -50,32 +50,25 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
     )
     conn.commit()
     cur.close()
-
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template("home.html")
 
-@app.route('/loggedin.html', methods=['GET', 'POST'])
-def signout():
-    return render_template("home.html")
-
-@app.route('/loggedintutor.html', methods=['GET', 'POST'])
-def signouttutor():
-    return render_template("home.html")
+@app.route('/logout')
+def logout():
+    session.clear()
+    return  render_template("home.html")
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
+    conn = mysql.connector.connect(
+    host="localhost",
+    database="fmt",
+    user="root",
+    password=""
+)
     error = None
     fullname = None
-    conn = mysql.connector.connect(
-        host="localhost",
-        database="fmt",
-        user="root",
-        password="root"
-    )
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -92,12 +85,32 @@ def login():
             c.execute(tutor_query, (email, password))
             tutor = c.fetchone()
             if tutor is not None:
-                return render_template('loggedintutor.html', username=fullname)
+                session['username'] = fullname
+                session['user_type'] = 'tutor'
+                return redirect(url_for('loggedintutor'))
             else:
-                return render_template('loggedin.html', username=fullname)
+                session['username'] = fullname
+                session['user_type'] = 'student'
+                return redirect(url_for('loggedin'))
         conn.commit()
         conn.close()
     return render_template('login.html', error=error)
+
+@app.route('/loggedin.html')
+def loggedin():
+    if 'username' in session and session['user_type'] == 'student':
+        username = session['username']
+        return render_template('loggedin.html', username=username)
+    else:
+       return render_template('login.html')
+
+@app.route('/loggedintutor.html')
+def loggedintutor():
+    if 'username' in session and session['user_type'] == 'tutor':
+        username = session['username']
+        return render_template('loggedintutor.html', username=username)
+    else:
+        return render_template('login.html')
 
 
 # Define a route for the registration form

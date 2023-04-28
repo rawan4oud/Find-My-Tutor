@@ -13,8 +13,8 @@
       <ul class="nav-menu">
         <li> <a href="#aboutus" class="nav-link">About Us</a> </li>
         <li> <a href="#contactus" class="nav-link">Contact Us</a> </li>
-        <li> <a href="tutorprofile.html" class="nav-link">My Profile</a> </li>
-        <li> <a href="/loggedintutor.html" class="nav-link">Logout</a> </li>
+        <li> <a href="tutorprofile.html?username={{ session['username'] }}" class="nav-link">My Profile</a> </li>
+       <li> <a href="{{ url_for('logout') }}" class="nav-link">Logout</a> </li>
       </ul>
     </nav>
   </header>
@@ -23,7 +23,9 @@
     <div class="head_container">
       <div class="box">
         <div class="text">
-          <h1>Welcome, Dr. {{ username }} !</h1>
+          {% if 'username' in session %}
+          <h1>Welcome, Dr.{{ session['username'] }}!</h1>
+          {% endif %}
           <p>Search for your own personal tutor</p>
         </div>
         <form action="/results.html" method="POST">
