@@ -24,7 +24,7 @@
         <div class="box">
             <div class="text">
                 {% if 'username' in session %}
-                <h1>Welcome, {{ session['username'] }}!</h1>
+                <h1>Welcome, {{ session['fullname'] }}!</h1>
                 {% endif %}
                 <p>Search for your own personal tutor</p>
             </div>

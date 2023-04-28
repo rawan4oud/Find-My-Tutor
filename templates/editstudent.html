@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    console.log('{{ interests }}');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Find My Tutor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="image1">
+      <img src="static/tutor.jpg" alt="Your Image">
+    </div>
+    <div class="wrapper">
+      <div class="registration_form">
+        <form method="post" enctype="multipart/form-data">
+          <div class="form_wrap">
+            <h2>Edit your Profile</h2>
+            <div class="input_grp">
+              <div class="input_wrap">
+                <label for="fname">First Name</label>
+                <input type="text" name="fname" value="{{ session['fname'] }}">
+              </div>
+              <div class="input_wrap">
+                <label for="lname">Last Name</label>
+                <input type="text" name="lname"  value="{{ session['lname'] }}">
+              </div>
+            </div>
+            <div class="input_wrap">
+              <label for="password">Password</label>
+              <input type="password" name="password"  placeholder="{{ session['password'] }}">
+            </div>
+            <div class="input_wrap">
+              <label for="gender">Gender</label>
+              <input type="text" name="gender"  value="{{ session['gender'] }}">
+            </div>
+            <div class="input_grp">
+              <div class="input_wrap">
+                <label for="age">Age</label>
+                <input type="number" name="age" min="0"  value="{{ session['age'] }}">
+              </div>
+              <div class="input_wrap" style="margin-left: 10px;">
+                <label for="contact">Contact</label>
+                <input type="tel" name="contact"  value="{{ session['contact'] }}">
+              </div>
+            </div>
+            <div class="input_wrap">
+              <label for="languages">Languages</label>
+              <select name="languages" multiple>
+                <option value="English" {% if 'English' in session['languages'] %}selected{% endif %}>English</option>
+                <option value="Spanish" {% if 'Spanish' in session['languages'] %}selected{% endif %}>Spanish</option>
+                <option value="French" {% if 'French' in session['languages'] %}selected{% endif %}>French</option>
+                <option value="German" {% if 'German' in session['languages'] %}selected{% endif %}>German</option>
+                <option value="Chinese" {% if 'Chinese' in session['languages'] %}selected{% endif %}>Chinese</option>
+                <!-- Add more language options here -->
+              </select>
+            </div>
+            <div class="input_wrap">
+              <label for="interests">Here are our given subjects</label>
+              <select name="interests" multiple>
+                {% for interest in interests %}
+                  <option value="{{ interest }}">{{ interest }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="input_wrap">
+              <label for="image">Image</label>
+              <input type="file" name="image">
+            </div>
+            <div class="input_wrap">
+              <input type="submit" value="Register Now" class="submit_btn">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

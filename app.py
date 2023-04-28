@@ -11,7 +11,7 @@ conn = mysql.connector.connect(
     host="localhost",
     database="fmt",
     user="root",
-    password="root"
+    password=""
 )
 
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
@@ -52,6 +52,21 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
     conn.commit()
     cur.close()
 
+def update_student(username, fname, lname, email, password, age, gender, contact, image, languages, newinterest):
+    cur = conn.cursor()
+    fullname = f"{fname} {lname}"
+    languages_str = ', '.join(languages) 
+    cur.execute(
+        "UPDATE USER SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, contact = %s WHERE username = %s",
+        (password, image, fullname, age, gender, languages_str, contact, username)
+    )
+    cur.execute(
+        "UPDATE STUDENT SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, interests = %s, contact = %s WHERE useruser = %s AND userpass = %s",
+        (password, image, fullname, age, gender, languages_str, newinterest, contact, email, password)
+    )
+    conn.commit()
+    cur.close()
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -64,13 +79,37 @@ def logout():
     return render_template("home.html")
 
 
+@app.route('/studentprofile.html')
+def profile():
+    username = session['username']
+    conn = mysql.connector.connect(
+        host="localhost",
+        database="fmt",
+        user="root",
+        password=""
+    )
+    c = conn.cursor()
+    c.execute("SELECT * FROM STUDENT WHERE username=%s", (username,))
+    student = c.fetchone()
+    if student:
+        session['picture'] = student[2]
+        session['fullname'] = student[3]
+        session['age'] = student[4]
+        session['gender'] = student[5]
+        session['languages'] = student[6]
+        session['contact'] = student[7]
+        session['interests'] = student[8]
+        return render_template('studentprofile.html', student=student)
+    else:
+        return "Error: student not found"
+    
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
     conn = mysql.connector.connect(
         host="localhost",
         database="fmt",
         user="root",
-        password="root"
+        password=""
     )
     error = None
     fullname = None
@@ -90,11 +129,13 @@ def login():
             c.execute(tutor_query, (email, password))
             tutor = c.fetchone()
             if tutor is not None:
-                session['username'] = fullname
+                session['username'] = email
+                session['fullname'] = fullname
                 session['user_type'] = 'tutor'
                 return redirect(url_for('loggedintutor'))
             else:
-                session['username'] = fullname
+                session['username'] = email
+                session['fullname'] = fullname
                 session['user_type'] = 'student'
                 return redirect(url_for('loggedin'))
         conn.commit()
@@ -200,6 +241,80 @@ def signup_form2():
         # remove commas and create a set of unique interests
         interests = set(','.join(interests_list).split(','))
         return render_template('becomeatutor.html', interests=interests)
+
+
+@app.route('/editstudent.html', methods=['GET', 'POST'])
+def editstudent_form():
+    username = session['username']
+    conn = mysql.connector.connect(
+        host="localhost",
+        database="fmt",
+        user="root",
+        password=""
+    )
+    c = conn.cursor()
+    c.execute("SELECT * FROM STUDENT WHERE username=%s", (username,))
+    student = c.fetchone()
+    if student:
+        session['password'] = student[1]
+        session['picture'] = student[2]
+        session['fullname'] = student[3]
+        full_name = session['fullname']
+        first_name, last_name = full_name.split()
+        session['fname'] = first_name
+        session['lname'] = last_name
+        session['age'] = student[4]
+        session['gender'] = student[5]
+        session['languages'] = student[6]
+        session['contact'] = student[7]
+        session['interests'] = student[8]
+
+    if request.method == 'POST':
+        # Get form data
+        fname = request.form['fname']
+        lname = request.form['lname']
+        password = request.form['password']
+        gender = request.form['gender']
+        age = request.form['age']
+        contact = request.form['contact']
+        languages = request.form.getlist('languages')
+        image = request.files['image']
+
+        # Handle multiple interests
+        interests_str = ''
+        if 'interests' in request.form:
+            interests = request.form.getlist('interests')
+            interests_str = ','.join(interests)
+
+        # Save image file
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # Check if user already exists in database
+        cursor = conn.cursor()
+        cursor.execute('SELECT username FROM USER WHERE username = %s', (email,))
+        user_exists = cursor.fetchone() is not None
+        cursor.close()
+
+        # Insert or update data into database
+        if user_exists:
+            update_student(email, fname, lname, email, password, age, gender, contact, filename, languages,
+                           interests_str)
+        else:
+            insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
+
+        username = fname + ' ' + lname
+        return render_template('studentprofile.html', username=username)
+    else:
+        cursor = conn.cursor()
+        # execute SQL query to select interests from the STUDENT table
+        cursor.execute('SELECT subjects FROM TUTOR')
+        # retrieve all the interests and store them in a list
+        interests_list = [row[0] for row in cursor.fetchall() if row[0] is not None]
+        # remove commas and create a set of unique interests
+        interests = set(','.join(interests_list).split(','))
+        cursor.close()
+        return render_template('editstudent.html', interests=interests)
 
 
 @app.route('/search.html', methods=['GET', 'POST'])
