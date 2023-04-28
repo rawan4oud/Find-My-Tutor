@@ -52,7 +52,7 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
     conn.commit()
     cur.close()
 
-def update_student(username, fname, lname, email, password, age, gender, contact, image, languages, newinterest):
+def update_student(username, fname, lname, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
     languages_str = ', '.join(languages) 
@@ -62,7 +62,7 @@ def update_student(username, fname, lname, email, password, age, gender, contact
     )
     cur.execute(
         "UPDATE STUDENT SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, interests = %s, contact = %s WHERE useruser = %s AND userpass = %s",
-        (password, image, fullname, age, gender, languages_str, newinterest, contact, email, password)
+        (password, image, fullname, age, gender, languages_str, newinterest, contact, username, password)
     )
     conn.commit()
     cur.close()
@@ -270,35 +270,73 @@ def editstudent_form():
         session['interests'] = student[8]
 
     if request.method == 'POST':
-        # Get form data
-        fname = request.form['fname']
-        lname = request.form['lname']
-        password = request.form['password']
-        gender = request.form['gender']
-        age = request.form['age']
-        contact = request.form['contact']
+        fname = request.form.get('fname', '')
+        lname = request.form.get('lname', '')
+        password = request.form.get('password', '')
+        gender = request.form.get('gender', '')
+        age = request.form.get('age', '')
+        contact = request.form.get('contact', '')
         languages = request.form.getlist('languages')
         image = request.files['image']
+        # Get form data
+        if fname == '':
+            fname = session['fname']
+        else:
+            fname = request.form['fname']
 
-        # Handle multiple interests
+        if lname == '':
+            lname = session['lname']
+        else:
+            lname = request.form['lname']
+
+        if password == '':
+            password = session['password']
+        else:
+            password = request.form['password']
+
+        if gender == '':
+            gender = session['gender']
+        else:
+            gender = request.form['gender']
+
+        if age == '':
+            age = session['age']
+        else:
+            age = request.form['age']
+
+        if contact == '':
+            contact = session['contact']
+        else:
+            contact = request.form['contact']
+
+        if not languages:
+            languages = session['languages']
+        else:
+            languages = request.form.getlist('languages')
+        filename = None
+        if not image:
+            image = session['picture']
+
+        # Otherwise, save the uploaded image and set image to its filename
+        else:
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image = filename
+
         interests_str = ''
         if 'interests' in request.form:
             interests = request.form.getlist('interests')
             interests_str = ','.join(interests)
 
-        # Save image file
-        filename = secure_filename(image.filename)
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
         # Check if user already exists in database
         cursor = conn.cursor()
-        cursor.execute('SELECT username FROM USER WHERE username = %s', (email,))
+        cursor.execute('SELECT username FROM USER WHERE username = %s', (username,))
         user_exists = cursor.fetchone() is not None
         cursor.close()
 
         # Insert or update data into database
         if user_exists:
-            update_student(email, fname, lname, email, password, age, gender, contact, filename, languages,
+            update_student(username, fname, lname, password, age, gender, contact, image, languages,
                            interests_str)
         else:
             insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
