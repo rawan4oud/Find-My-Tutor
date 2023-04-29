@@ -23,47 +23,47 @@
             <div class="input_grp">
               <div class="input_wrap">
                 <label for="fname">First Name</label>
-                <input type="text" name="fname" value="{{ session['fname'] }}">
+                <input type="text" name="fname" value="{{ student['fullname'].split()[0] }}">
               </div>
               <div class="input_wrap">
                 <label for="lname">Last Name</label>
-                <input type="text" name="lname"  value="{{ session['lname'] }}">
+                <input type="text" name="lname"  value="{{ student['fullname'].split()[1] }}">
               </div>
             </div>
             <div class="input_wrap">
               <label for="password">Password</label>
-              <input type="password" name="password"  placeholder="{{ session['password'] }}">
+              <input type="password" name="password"  value="{{ student['password'] }}" placeholder="password">
             </div>
             <div class="input_wrap">
               <label for="gender">Gender</label>
-              <input type="text" name="gender"  value="{{ session['gender'] }}">
+              <input type="text" name="gender"  value="{{ student['gender'] }}">
             </div>
             <div class="input_grp">
               <div class="input_wrap">
                 <label for="age">Age</label>
-                <input type="number" name="age" min="0"  value="{{ session['age'] }}">
+                <input type="number" name="age" min="0"  value="{{ student['age'] }}">
               </div>
               <div class="input_wrap" style="margin-left: 10px;">
                 <label for="contact">Contact</label>
-                <input type="tel" name="contact"  value="{{ session['contact'] }}">
+                <input type="tel" name="contact"  value="{{ student['contact'] }}">
               </div>
             </div>
             <div class="input_wrap">
               <label for="languages">Languages</label>
               <select name="languages" multiple>
-                <option value="English" {% if 'English' in session['languages'] %}selected{% endif %}>English</option>
-                <option value="Spanish" {% if 'Spanish' in session['languages'] %}selected{% endif %}>Spanish</option>
-                <option value="French" {% if 'French' in session['languages'] %}selected{% endif %}>French</option>
-                <option value="German" {% if 'German' in session['languages'] %}selected{% endif %}>German</option>
-                <option value="Chinese" {% if 'Chinese' in session['languages'] %}selected{% endif %}>Chinese</option>
+                <option value="English" {% if 'English' in student['languages'] %}selected{% endif %}>English</option>
+                <option value="Spanish" {% if 'Spanish' in student['languages'] %}selected{% endif %}>Spanish</option>
+                <option value="French" {% if 'French' in student['languages'] %}selected{% endif %}>French</option>
+                <option value="German" {% if 'German' in student['languages'] %}selected{% endif %}>German</option>
+                <option value="Chinese" {% if 'Chinese' in student['languages'] %}selected{% endif %}>Chinese</option>
                 <!-- Add more language options here -->
               </select>
             </div>
             <div class="input_wrap">
               <label for="interests">Here are our given subjects</label>
               <select name="interests" multiple>
-                {% for interest in interests %}
-                  <option value="{{ interest }}">{{ interest }}</option>
+                {% for interest in all_interests %}
+                  <option value="{{ interest }}" {% if interest in student['interests'] %}selected{% endif %}>{{ interest }}</option>
                 {% endfor %}
               </select>
             </div>
