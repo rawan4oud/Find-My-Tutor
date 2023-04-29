@@ -20,53 +20,50 @@
             <div class="input_grp">
               <div class="input_wrap">
                 <label for="fname">First Name</label>
-                <input type="text" name="fname">
+                <input type="text" name="fname" value="{{ tutor['fullname'].split()[0] }}">
               </div>
               <div class="input_wrap">
                 <label for="lname">Last Name</label>
-                <input type="text" name="lname">
+                <input type="text" name="lname" value="{{ tutor['fullname'].split()[1] }}">
               </div>
             </div>
             <div class="input_wrap">
-              <label for="email">Email Address</label>
-              <input type="text" name="email">
-            </div>
-            <div class="input_wrap">
               <label for="password">Password</label>
-              <input type="password" name="password">
+              <input type="password" name="password" value="{{ tutor['password'] }}">
             </div>
             <div class="input_wrap">
               <label for="gender">Gender</label>
-              <input type="text" name="gender">
+              <input type="text" name="gender" value="{{ tutor['gender'] }}">
             </div>
             <div class="input_grp">
               <div class="input_wrap">
                 <label for="age">Age</label>
-                <input type="number" name="age" min="0">
+                <input type="number" name="age" min="0" value="{{ tutor['age'] }}">
               </div>
               <div class="input_wrap" style="margin-left: 10px;">
                 <label for="contact">Contact</label>
-                <input type="tel" name="contact">
+                <input type="tel" name="contact" value="{{ tutor['contact'] }}">
               </div>
             </div>
             <div class="input_wrap">
               <label for="languages">Languages</label>
               <select name="languages" multiple>
-                <option value="English">English</option>
-                <option value="Arabic">Arabic</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
-                <option value="Chinese">Chinese</option>
+                <option value="English" {% if 'English' in tutor['languages'] %}selected{% endif %}>English</option>
+                <option value="Arabic" {% if 'Arabic' in tutor['languages'] %}selected{% endif %}>Arabic</option>
+                <option value="Spanish" {% if 'Spanish' in tutor['languages'] %}selected{% endif %}>Spanish</option>
+                <option value="French" {% if 'French' in tutor['languages'] %}selected{% endif %}>French</option>
+                <option value="German" {% if 'German' in tutor['languages'] %}selected{% endif %}>German</option>
+                <option value="Chinese" {% if 'Chinese' in tutor['languages'] %}selected{% endif %}>Chinese</option>
                 <!-- Add more language options here -->
               </select>
             </div>
             <div class="input_wrap">
               <label for="interests">Subjects</label>
               <select name="interests" multiple>
-                {% for interest in interests %}
-                  <option value="{{ interest }}">{{ interest }}</option>
+                {% for interest in all_interests %}
+                  <option value="{{ interest }}" {% if interest in tutor['interests'] %}selected{% endif %}>{{ interest }}</option>
                 {% endfor %}
+              </select>
               </select>
             </div>
             <div class="input_wrap">
@@ -76,33 +73,34 @@
             </div>
             <div class="input_wrap">
               <label for="bio">Bio</label>
-              <textarea name="bio"></textarea>
+              <textarea name="bio" value="{{ tutor['bio'] }}"></textarea>
             </div>
             <div class="input_wrap">
               <label for="education">Education</label>
-              <input type="text" name="education">
+              <input type="text" name="education" value="{{ tutor['education'] }}">
             </div>
             <div class="input_wrap">
               <label for="yearsofexperience">Years of Experience</label>
-              <input type="number" name="yearsofexperience" min="0">
+              <input type="number" name="yearsofexperience" min="0" value="{{ tutor[' yearsofexperience'] }}">
             </div>
             <div class="input_wrap">
-              <label for="location">Location</label>
-              <select name="location">
-                <option value="">Select District</option>
-                <option value="Akkar">Akkar</option>
-                <option value="Baalbek-Hermel">Baalbek-Hermel</option>
-                <option value="Beirut">Beirut</option>
-                <option value="Beqaa">Beqaa</option>
-                <option value="Mount Lebanon">Mount Lebanon</option>
-                <option value="Nabatieh">Nabatieh</option>
-                <option value="North Lebanon">North Lebanon</option>
-                <option value="South Lebanon">South Lebanon</option>
-              </select>
-            </div>
+                <label for="location">Location</label>
+                <select name="location">
+                  <option value="Akkar" {% if 'Akkar' in tutor['location'] %}selected{% endif %}>Akkar</option>
+                  <option value="Baalbek-Hermel" {% if 'Baalbek-Hermel' in tutor['location'] %}selected{% endif %}>Baalbek-Hermel</option>
+                  <option value="Beirut" {% if 'Beirut' in tutor['location'] %}selected{% endif %}>Beirut</option>
+                  <option value="Beqaa" {% if 'Beqaa' in tutor['location'] %}selected{% endif %}>Beqaa</option>
+                  <option value="Mount Lebanon" {% if 'Mount Lebanon' in tutor['location'] %}selected{% endif %}>Mount Lebanon</option>
+                  <option value="Nabatieh" {% if 'Nabatieh' in tutor['location'] %}selected{% endif %}>Nabatieh</option>
+                  <option value="North Lebanon" {% if 'North Lebanon' in tutor['location'] %}selected{% endif %}>North Lebanon</option>
+                  <option value="South Lebanon" {% if 'South Lebanon' in tutor['location'] %}selected{% endif %}>South Lebanon</option>
+                  <!-- Add more location options here -->
+                </select>
+              </div>
+              
             <div class="input_wrap">
               <label for="availability">Availability</label>
-              <input type="text" name="availability">
+              <input type="text" name="availability" value="{{ tutor['availability'] }}">
             </div>
             <div class="card">
               <h4>Price Range Slider</h4>
@@ -110,18 +108,18 @@
               <div class="price-content">
                 <div>
                   <label>Min</label>
-                  <p id="min-value">$10</p>
+                  <p id="min-value">{{ tutor['minprice'] }}</p>
                 </div>
             
                 <div>
                   <label>Max</label>
-                  <p id="max-value">$500</p>
+                  <p id="max-value">{{ tutor['maxprice'] }}</p>
                 </div>
               </div>
             
               <div class="range-slider">
-                <input type="range" class="min-price" name="minprice" value="0" min="0" max="100" step="1">
-                <input type="range" class="max-price" name="maxprice" value="100" min="0" max="100" step="1">
+                <input type="range" class="min-price" name="minprice" value="{{ tutor['minprice'] }}" min="0" max="100" step="1">
+                <input type="range" class="max-price"name="maxprice"  value="{{ tutor['maxprice'] }}" min="0" max="100" step="1">
               </div>
             </div>
             <script>let minValue = document.getElementById("min-value");
@@ -153,15 +151,15 @@
               
               validateRange(inputElements[0].value, inputElements[1].value);
               </script>
-            <div class="input_wrap">
-              <label for="deliverymethod">Delivery Method</label>
-              <select name="deliverymethod" multiple>
-                <option value="Online">Online</option>
-                <option value="Hybrid">Hybrid</option>
-                <option value="In-Person">In-Person</option>
-                <!-- Add more language options here -->
-              </select>
-            </div>
+         <div class="input_wrap">
+            <label for="deliverymethod">Delivery Method</label>
+            <select name="deliverymethod" multiple>
+              <option value="Online" {% if 'Online' in tutor['deliverymethod'] %}selected{% endif %}>Online</option>
+              <option value="Hybrid" {% if 'Hybrid' in tutor['deliverymethod'] %}selected{% endif %}>Hybrid</option>
+              <option value="In-Person" {% if 'In-Person' in tutor['deliverymethod'] %}selected{% endif %}>In-Person</option>
+              <!-- Add more delivery method options here -->
+            </select>
+          </div>          
             <div class="input_wrap">
               <label for="image">Pick your profile picture</label>
               <input type="file" name="image">

@@ -15,3 +15,19 @@ def get_student_instance(username: str):
         user = cursor.fetchone()
 
     return user
+
+def get_tutor_instance(username: str):
+    with mysql.connector.connect(
+        host="localhost",
+        database="newdb",
+        user="root",
+        password=""
+    ) as conn:
+
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(f"SELECT * FROM TUTOR WHERE username = '{username}'")
+
+        user = cursor.fetchone()
+
+    return user

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
 import mysql.connector
 from werkzeug.utils import secure_filename
 from controller import *
@@ -16,7 +16,8 @@ conn = mysql.connector.connect(
 )
 
 app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
-
+app.config['CV'] = 'static/CV'
+app.config['Docs'] = 'static/Docs'
 
 # Define a function to insert a new student record into the database
 def insert_student(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
@@ -35,23 +36,23 @@ def insert_student(fname, lname, email, password, age, gender, contact, image, l
     cur.close()
 
 
-def insert_tutor(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
+def insert_tutor(fname, lname, email, password, age, gender, contact, image, languages, newsubjects, bio, education, years_of_experience, location, availability, minprice, maxprice, deliverymethod, avgrating, cvname, docs):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
-    languages_str = ', '.join(languages)
+    subjects_str = ', '.join(newsubjects)
     cur.execute(
         "INSERT INTO USER (username, password, picture, fullname, age, gender, languages, contact) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-        (email, password, image, fullname, age, gender, languages_str, contact)
+        (email, password, image, fullname, age, gender, languages, contact)
     )
     cur.execute(
-        "INSERT INTO TUTOR (username, password, picture, fullname, age, gender, subjects, contact, useruser, userpass, bio, education, yearsofexperience, location, availability, pricerange, deliverymethod, avgrating, cv, docs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        "INSERT INTO TUTOR (username, password, picture, fullname, age, gender, languages, contact, bio, education, yearsofexperience, location, subjects, availability, minprice, maxprice, deliverymethod, avgrating, cv, docs, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
-            email, password, image, fullname, age, gender, newinterest, contact, email, password, "", "", 0, "", "", "",
-            "",
-            0.0, "", "")
+            email, password, image, fullname, age, gender, languages, contact, bio, education, years_of_experience,
+            location, subjects_str, availability, minprice, maxprice, deliverymethod, avgrating, cvname, docs, email, password)
     )
     conn.commit()
     cur.close()
+
 
 def update_student(username, fname, lname, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
@@ -64,6 +65,22 @@ def update_student(username, fname, lname, password, age, gender, contact, image
     cur.execute(
         "UPDATE STUDENT SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, interests = %s, contact = %s WHERE useruser = %s AND userpass = %s",
         (password, image, fullname, age, gender, languages_str, newinterest, contact, username, password)
+    )
+    conn.commit()
+    cur.close()
+def update_tutor(username,fname, lname, password, age, gender, contact, image, languages, bio, education, yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod, cv, docs):
+    cur = conn.cursor()
+    fullname = f"{fname} {lname}"
+    languages_str = ', '.join(languages)
+    location_str = ', '.join(location)
+    deliverymethod_str= ', '.join(deliverymethod)
+    cur.execute(
+        "UPDATE USER SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, contact = %s WHERE username = %s",
+        (password, image, fullname, age, gender, languages_str, contact, username)
+    )
+    cur.execute(
+        "UPDATE TUTOR SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, bio = %s, education = %s, yearsofexperience = %s, location = %s, subjects = %s, availability = %s, minprice = %s, maxprice = %s, deliverymethod = %s,  cv = %s, docs = %s WHERE useruser = %s AND userpass = %s",
+        (password, image, fullname, age, gender, languages_str, bio, education, yearsofexperience, location_str, interests_str, availability, minprice, maxprice, deliverymethod_str,  cv, docs, username, password)
     )
     conn.commit()
     cur.close()
@@ -88,6 +105,17 @@ def profile():
 
     if student:
         return render_template('studentprofile.html', student=student)
+    else:
+        return "Error: student not found"
+
+@app.route('/tutorprofile.html')
+def tutorprofile():
+    username = session['username']
+
+    tutor = get_tutor_instance(username)
+
+    if tutor:
+        return render_template('tutorprofile.html', tutor=tutor)
     else:
         return "Error: student not found"
 
@@ -119,7 +147,7 @@ def login():
             if tutor is not None:
                 session['username'] = email
                 session['user_type'] = 'tutor'
-                return redirect(url_for('loggedintutor'))
+                return render_template('loggedintutor.html',tutor=get_tutor_instance(email))
             else:
                 session['username'] = email
                 session['user_type'] = 'student'
@@ -133,8 +161,7 @@ def login():
 def loggedin():
     if 'username' in session and session['user_type'] == 'student':
         username = session['username']
-
-        return render_template('loggedin.html', username=username, student=get_student_instance(username))
+        return render_template('loggedin.html', username=username)
     else:
         return render_template('login.html')
 
@@ -176,8 +203,7 @@ def signup_form():
         # Insert data into database
         insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
         username = fname + ' ' + lname
-        session['username'] = email
-        session['user_type']= 'student'
+        session['username']=email
         return render_template('loggedin.html', student=get_student_instance(email), username=username)
     else:
         cursor = conn.cursor()
@@ -201,9 +227,20 @@ def signup_form2():
         gender = request.form['gender']
         age = request.form['age']
         contact = request.form['contact']
-        languages = request.form.getlist('languages')
+        languages = ','.join(request.form.getlist('languages'))
         image = request.files['image']
         newinterest = request.form['newinterest']
+        bio = request.form['bio']
+        education = request.form['education']
+        years_of_experience = request.form['yearsofexperience']
+        location = ','.join(request.form.getlist('location'))
+        availability = request.form['availability']
+        delivery_method = ','.join(request.form.getlist('deliverymethod'))
+        cv = request.files['cv']
+        docs = request.files['docs']
+        min_price = request.form['minprice']
+        max_price = request.form['maxprice']
+        avgrating=0
 
         # Handle multiple interests
         if 'interests' in request.form:
@@ -213,14 +250,22 @@ def signup_form2():
         else:
             interests_str = newinterest
 
-        # Save image file
         filename = secure_filename(image.filename)
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+        # Save cv file
+        cvname = secure_filename(cv.filename)
+        cv.save(os.path.join(app.config['CV'], cvname))
+
+        # Save docs file
+        docsname = secure_filename(docs.filename)
+        docs.save(os.path.join(app.config['Docs'], docsname))
+
         # Insert data into database
-        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
+        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages, bio, education, years_of_experience, location, interests_str, availability, min_price, max_price, delivery_method, avgrating, cvname, docsname)
         username = fname + ' ' + lname
-        return render_template('loggedintutor.html', username=username)
+        session['username']=email
+        return render_template('loggedintutor.html', tutor=get_tutor_instance(email), username=username)
     else:
         cursor = conn.cursor()
         # execute SQL query to select interests from the STUDENT table
@@ -282,6 +327,82 @@ def editstudent_form():
         cursor.close()
         return render_template('editstudent.html', student=user, all_interests=all_interests)
 
+@app.route('/edittutor.html', methods=['GET', 'POST'])
+def edittutor_form():
+    username = session['username']
+
+    user = get_tutor_instance(username)
+
+    if request.method == 'POST':
+        fname = request.form.get('fname', '')
+        lname = request.form.get('lname', '')
+        password = request.form.get('password', '')
+        gender = request.form.get('gender', '')
+        age = request.form.get('age', '')
+        contact = request.form.get('contact', '')
+        languages = request.form.getlist('languages')
+        bio = request.form.get('bio', '')
+        newinterest=request.form.get('newinterest', '')
+        education = request.form.get('education', '')
+        yearsofexperience = request.form.get('yearsofexperience', '')
+        location = request.form.getlist('location')
+        availability = request.form.get('availability', '')
+        minprice = request.form.get('minprice', '')
+        maxprice =  request.form.get('maxprice', '')
+        deliverymethod =request.form.getlist('deliverymethod')
+        image = request.files['image']
+        cv = request.files['cv']
+        docs = request.files['docs']
+
+        if not image:
+            image = user['picture']
+        else:
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image = filename
+
+        if not cv:
+            cv = user['cv']
+        else:
+            filename = secure_filename(cv.filename)
+            cv.save(os.path.join(app.config['CV'], filename))
+            cv = filename
+
+        if not docs:
+            docs = user['docs']
+        else:
+            filename = secure_filename(docs.filename)
+            docs.save(os.path.join(app.config['Docs'], filename))
+            docs = filename
+
+         # Handle multiple interests
+        if 'interests' in request.form:
+            interests = request.form.getlist('interests')
+            interests.append(newinterest)
+            interests_str = ','.join(interests)
+        else:
+            interests_str = newinterest
+
+        user_exists = get_tutor_instance(username) is not None
+
+        # Insert or update data into database
+        if user_exists:
+            update_tutor(username,fname, lname, password, age, gender, contact, image, languages, bio, education, yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod, cv, docs)
+        else:
+            insert_student(fname, lname, username, password, age, gender, contact, filename, languages, interests_str)
+
+        user = get_tutor_instance(username)
+        return render_template('tutorprofile.html', tutor=user)
+    else:
+        cursor = conn.cursor()
+        # execute SQL query to select interests from the STUDENT table
+        cursor.execute('SELECT subjects FROM TUTOR')
+        # retrieve all the interests and store them in a list
+        interests_list = [row[0] for row in cursor.fetchall() if row[0] is not None]
+        # remove commas and create a set of unique interests
+        all_interests = set(','.join(interests_list).split(','))
+        cursor.close()
+        return render_template('edittutor.html', tutor=user, all_interests=all_interests)
 
 @app.route('/search.html', methods=['GET', 'POST'])
 def search():
@@ -306,6 +427,22 @@ def results():
 
         # Render search results template with results
         return render_template('results.html', results=results)
+    
+@app.route('/download-cv/<cv_name>')
+def download_cv(cv_name):
+    # Construct the file path
+    file_path = os.path.join(app.config['CV'], cv_name)
+
+    # Return the file to the user for download
+    return send_file(file_path, as_attachment=True)
+@app.route('/download-doc/<doc_name>')
+def download_doc(doc_name):
+    # Construct the file path
+    file_path = os.path.join(app.config['Docs'], doc_name)
+
+    # Return the file to the user for download
+    return send_file(file_path, as_attachment=True)
+
 
 
 if __name__ == '__main__':

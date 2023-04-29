@@ -52,6 +52,7 @@
               <label for="languages">Languages</label>
               <select name="languages" multiple>
                 <option value="English" {% if 'English' in student['languages'] %}selected{% endif %}>English</option>
+                <option value="Arabic" {% if 'Arabic' in student['languages'] %}selected{% endif %}>Arabic</option>
                 <option value="Spanish" {% if 'Spanish' in student['languages'] %}selected{% endif %}>Spanish</option>
                 <option value="French" {% if 'French' in student['languages'] %}selected{% endif %}>French</option>
                 <option value="German" {% if 'German' in student['languages'] %}selected{% endif %}>German</option>
