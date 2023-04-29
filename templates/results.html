@@ -23,6 +23,33 @@
             <button type="submit">Search</button>
         </form>
     </div>
+    <div class="filter-container">
+        <h3>Filters</h3>
+        <div class="price-range">
+            <h3>Price Range</h3>
+            <input type="range" min="10" max="200" value="50" class="slider">
+            <p>$10</p>
+            <p>$200+</p>
+        </div>
+        <div class="location">
+            <h3>Location</h3>
+            <ul>
+                <li><label><input type="checkbox" name="location" value="New York">New York</label></li>
+                <li><label><input type="checkbox" name="location" value="Los Angeles">Los Angeles</label></li>
+                <li><label><input type="checkbox" name="location" value="Chicago">Chicago</label></li>
+                <li><label><input type="checkbox" name="location" value="Miami">Miami</label></li>
+                <li><label><input type="checkbox" name="location" value="San Francisco">San Francisco</label></li>
+            </ul>
+        </div>
+        <div class="age-range">
+            <h3>Age Range</h3>
+            <input type="range" min="15" max="50" value="30" class="slider">
+            <p>15</p>
+            <p>50+</p>
+        </div>
+    </div>
+
+
     <div class="container">
         {% if results %}
         {% for result in results %}

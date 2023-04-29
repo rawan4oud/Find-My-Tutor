@@ -20,7 +20,7 @@
   flex-direction: row;
 }
 
-.image1 {
+.image1 img{
   flex: 1;
 }
 
