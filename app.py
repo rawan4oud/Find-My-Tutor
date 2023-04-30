@@ -19,6 +19,7 @@ app.config['UPLOAD_FOLDER'] = 'static/UPLOAD_FOLDER'
 app.config['CV'] = 'static/CV'
 app.config['Docs'] = 'static/Docs'
 
+
 # Define a function to insert a new student record into the database
 def insert_student(fname, lname, email, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
@@ -36,7 +37,9 @@ def insert_student(fname, lname, email, password, age, gender, contact, image, l
     cur.close()
 
 
-def insert_tutor(fname, lname, email, password, age, gender, contact, image, languages, newsubjects, bio, education, years_of_experience, location, availability, minprice, maxprice, deliverymethod, avgrating, cvname, docs):
+def insert_tutor(fname, lname, email, password, age, gender, contact, image, languages, newsubjects, bio, education,
+                 years_of_experience, location, availability, minprice, maxprice, deliverymethod, avgrating, cvname,
+                 docs):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
     subjects_str = ', '.join(newsubjects)
@@ -48,7 +51,8 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
         "INSERT INTO TUTOR (username, password, picture, fullname, age, gender, languages, contact, bio, education, yearsofexperience, location, subjects, availability, minprice, maxprice, deliverymethod, avgrating, cv, docs, useruser, userpass) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
             email, password, image, fullname, age, gender, languages, contact, bio, education, years_of_experience,
-            location, subjects_str, availability, minprice, maxprice, deliverymethod, avgrating, cvname, docs, email, password)
+            location, subjects_str, availability, minprice, maxprice, deliverymethod, avgrating, cvname, docs, email,
+            password)
     )
     conn.commit()
     cur.close()
@@ -57,7 +61,7 @@ def insert_tutor(fname, lname, email, password, age, gender, contact, image, lan
 def update_student(username, fname, lname, password, age, gender, contact, image, languages, newinterest):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
-    languages_str = ', '.join(languages) 
+    languages_str = ', '.join(languages)
     cur.execute(
         "UPDATE USER SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, contact = %s WHERE username = %s",
         (password, image, fullname, age, gender, languages_str, contact, username)
@@ -68,19 +72,24 @@ def update_student(username, fname, lname, password, age, gender, contact, image
     )
     conn.commit()
     cur.close()
-def update_tutor(username,fname, lname, password, age, gender, contact, image, languages, bio, education, yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod, cv, docs):
+
+
+def update_tutor(username, fname, lname, password, age, gender, contact, image, languages, bio, education,
+                 yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod, cv,
+                 docs):
     cur = conn.cursor()
     fullname = f"{fname} {lname}"
     languages_str = ', '.join(languages)
     location_str = ', '.join(location)
-    deliverymethod_str= ', '.join(deliverymethod)
+    deliverymethod_str = ', '.join(deliverymethod)
     cur.execute(
         "UPDATE USER SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, contact = %s WHERE username = %s",
         (password, image, fullname, age, gender, languages_str, contact, username)
     )
     cur.execute(
         "UPDATE TUTOR SET password = %s, picture = %s, fullname = %s, age = %s, gender = %s, languages = %s, bio = %s, education = %s, yearsofexperience = %s, location = %s, subjects = %s, availability = %s, minprice = %s, maxprice = %s, deliverymethod = %s,  cv = %s, docs = %s WHERE useruser = %s AND userpass = %s",
-        (password, image, fullname, age, gender, languages_str, bio, education, yearsofexperience, location_str, interests_str, availability, minprice, maxprice, deliverymethod_str,  cv, docs, username, password)
+        (password, image, fullname, age, gender, languages_str, bio, education, yearsofexperience, location_str,
+         interests_str, availability, minprice, maxprice, deliverymethod_str, cv, docs, username, password)
     )
     conn.commit()
     cur.close()
@@ -93,7 +102,6 @@ def home():
 
 @app.route('/logout')
 def logout():
-    session.clear()
     return render_template("home.html")
 
 
@@ -108,6 +116,7 @@ def profile():
     else:
         return "Error: student not found"
 
+
 @app.route('/tutorprofile.html')
 def tutorprofile():
     username = session['username']
@@ -118,6 +127,7 @@ def tutorprofile():
         return render_template('tutorprofile.html', tutor=tutor)
     else:
         return "Error: student not found"
+
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
@@ -147,7 +157,7 @@ def login():
             if tutor is not None:
                 session['username'] = email
                 session['user_type'] = 'tutor'
-                return render_template('loggedintutor.html',tutor=get_tutor_instance(email))
+                return render_template('loggedintutor.html', tutor=get_tutor_instance(email))
             else:
                 session['username'] = email
                 session['user_type'] = 'student'
@@ -203,7 +213,7 @@ def signup_form():
         # Insert data into database
         insert_student(fname, lname, email, password, age, gender, contact, filename, languages, interests_str)
         username = fname + ' ' + lname
-        session['username']=email
+        session['username'] = email
         return render_template('loggedin.html', student=get_student_instance(email), username=username)
     else:
         cursor = conn.cursor()
@@ -240,7 +250,7 @@ def signup_form2():
         docs = request.files['docs']
         min_price = request.form['minprice']
         max_price = request.form['maxprice']
-        avgrating=0
+        avgrating = 0
 
         # Handle multiple interests
         if 'interests' in request.form:
@@ -262,9 +272,11 @@ def signup_form2():
         docs.save(os.path.join(app.config['Docs'], docsname))
 
         # Insert data into database
-        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages, bio, education, years_of_experience, location, interests_str, availability, min_price, max_price, delivery_method, avgrating, cvname, docsname)
+        insert_tutor(fname, lname, email, password, age, gender, contact, filename, languages, bio, education,
+                     years_of_experience, location, interests_str, availability, min_price, max_price, delivery_method,
+                     avgrating, cvname, docsname)
         username = fname + ' ' + lname
-        session['username']=email
+        session['username'] = email
         return render_template('loggedintutor.html', tutor=get_tutor_instance(email), username=username)
     else:
         cursor = conn.cursor()
@@ -327,6 +339,7 @@ def editstudent_form():
         cursor.close()
         return render_template('editstudent.html', student=user, all_interests=all_interests)
 
+
 @app.route('/edittutor.html', methods=['GET', 'POST'])
 def edittutor_form():
     username = session['username']
@@ -342,14 +355,14 @@ def edittutor_form():
         contact = request.form.get('contact', '')
         languages = request.form.getlist('languages')
         bio = request.form.get('bio', '')
-        newinterest=request.form.get('newinterest', '')
+        newinterest = request.form.get('newinterest', '')
         education = request.form.get('education', '')
         yearsofexperience = request.form.get('yearsofexperience', '')
         location = request.form.getlist('location')
         availability = request.form.get('availability', '')
         minprice = request.form.get('minprice', '')
-        maxprice =  request.form.get('maxprice', '')
-        deliverymethod =request.form.getlist('deliverymethod')
+        maxprice = request.form.get('maxprice', '')
+        deliverymethod = request.form.getlist('deliverymethod')
         image = request.files['image']
         cv = request.files['cv']
         docs = request.files['docs']
@@ -375,7 +388,7 @@ def edittutor_form():
             docs.save(os.path.join(app.config['Docs'], filename))
             docs = filename
 
-         # Handle multiple interests
+        # Handle multiple interests
         if 'interests' in request.form:
             interests = request.form.getlist('interests')
             interests.append(newinterest)
@@ -387,7 +400,9 @@ def edittutor_form():
 
         # Insert or update data into database
         if user_exists:
-            update_tutor(username,fname, lname, password, age, gender, contact, image, languages, bio, education, yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod, cv, docs)
+            update_tutor(username, fname, lname, password, age, gender, contact, image, languages, bio, education,
+                         yearsofexperience, location, interests_str, availability, minprice, maxprice, deliverymethod,
+                         cv, docs)
         else:
             insert_student(fname, lname, username, password, age, gender, contact, filename, languages, interests_str)
 
@@ -404,6 +419,7 @@ def edittutor_form():
         cursor.close()
         return render_template('edittutor.html', tutor=user, all_interests=all_interests)
 
+
 @app.route('/search.html', methods=['GET', 'POST'])
 def search():
     return render_template('search.html')
@@ -416,6 +432,63 @@ def results():
         # Get search query from form
         query = request.form['query']
 
+        location1 = request.form.getlist('location1')
+        location2 = request.form.getlist('location2')
+        location3 = request.form.getlist('location3')
+        location4 = request.form.getlist('location4')
+        location5 = request.form.getlist('location5')
+
+        location = [loc for loc in [location1, location2, location3, location4, location5] if loc != []]
+        min_price = request.form.get('minPrice')
+        max_price = request.form.get('maxPrice')
+        min_age = request.form.get('minAge')
+        max_age = request.form.get('maxAge')
+
+        # age_range = request.args.get('age_range')
+
+        if ((not location) and (not min_price) and (not max_price)):
+            print("1")
+            # Perform search in database with location filter
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT fullname, bio, subjects, picture FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s)",
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%',)
+            )
+            results = cur.fetchall()
+            cur.close()
+
+            # Render search results template with results
+            return render_template('results.html', results=results)
+
+        elif ((min_price is not None) and (max_price is not None) and (min_age is not None) and (
+                max_age is not None) and (not location)):
+            print("2")
+
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT fullname, bio, subjects, picture FROM tutor WHERE ((fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND minprice >= %s AND maxprice <= %s AND age >= %s AND age <= %s)",
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price, min_age, max_age)
+            )
+
+            results = cur.fetchall()
+
+            cur.close()
+            return render_template('results.html', results=results)
+
+        else:
+            print("3")
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT fullname, bio, subjects, picture FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND (minprice >= %s AND maxprice <= %s) AND location IN ({})".format(
+                    ','.join(['%s' for _ in range(len(location))])),
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price) + tuple(
+                    [x[0] for x in location])
+            )
+
+            results = cur.fetchall()
+            cur.close()
+            # Render search results template with results
+            return render_template('results.html', results=results)
         # Perform search in database
         cur = conn.cursor()
         cur.execute(
@@ -427,7 +500,8 @@ def results():
 
         # Render search results template with results
         return render_template('results.html', results=results)
-    
+
+
 @app.route('/download-cv/<cv_name>')
 def download_cv(cv_name):
     # Construct the file path
@@ -435,6 +509,8 @@ def download_cv(cv_name):
 
     # Return the file to the user for download
     return send_file(file_path, as_attachment=True)
+
+
 @app.route('/download-doc/<doc_name>')
 def download_doc(doc_name):
     # Construct the file path
@@ -442,7 +518,6 @@ def download_doc(doc_name):
 
     # Return the file to the user for download
     return send_file(file_path, as_attachment=True)
-
 
 
 if __name__ == '__main__':

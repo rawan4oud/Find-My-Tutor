@@ -4,8 +4,7 @@
     <title>Search Results</title>
     <link rel="stylesheet" href="static/results.css">
 </head>
-
-<form method="POST">
+<form action="/results.html" method="POST">
     <body>
     <header>
         <nav>
@@ -13,51 +12,158 @@
                 <li><a href="#aboutus" class="nav-link">About Us</a></li>
                 <li><a href="#contactus" class="nav-link">Contact Us</a></li>
                 <li><a href="studentprofile.html?username={{ username }}" class="nav-link">My Profile</a></li>
-                <li><a href="loggedin.html" class="nav-link">Logout</a></li>
+                <li><a href="home.html" class="nav-link">Logout</a></li>
             </ul>
         </nav>
     </header>
+
     <div class="search-box">
-        <form action="/results.html" method="POST">
-            <input type="text" placeholder="Search..." name="query">
-            <button type="submit">Search</button>
-        </form>
+        <input type="text" placeholder="Search..." name="query">
+        <button type="submit">Search</button>
     </div>
+
     <div class="filter-container">
-        <h3>Filters</h3>
-        <div class="price-range">
-            <h3>Price Range</h3>
-            <input type="range" min="10" max="200" value="50" class="slider">
-            <p>$10</p>
-            <p>$200+</p>
+        <div class="filter-header">
+            <h2>Filters</h2>
         </div>
+
+        <div class="price-range">
+            <h3>Price Range: $10 - $200+</h3>
+            <input type="range" min="10" max="200" value="10" class="slider" id="min-price-slider">
+            <input type="range" min="10" max="200" value="200" class="slider" id="max-price-slider">
+            <input type="hidden" name="minPrice" value="10">
+            <input type="hidden" name="maxPrice" value="200">
+        </div>
+
+        <script>
+    const minPriceRangeSlider = document.querySelector('#min-price-slider');
+    const maxPriceRangeSlider = document.querySelector('#max-price-slider');
+    const priceRangeLabel = document.querySelector('.price-range h3');
+    const minPriceInput = document.querySelector('input[name="minPrice"]');
+    const maxPriceInput = document.querySelector('input[name="maxPrice"]');
+
+    minPriceRangeSlider.addEventListener('input', () => {
+        priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
+        minPriceInput.value = minPriceRangeSlider.value;
+    });
+
+    maxPriceRangeSlider.addEventListener('input', () => {
+        priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
+        maxPriceInput.value = maxPriceRangeSlider.value;
+    });
+
+    minPriceRangeSlider.addEventListener('mouseup', () => {
+        maxPriceInput.value = '200';
+    });
+
+    maxPriceRangeSlider.addEventListener('mouseup', () => {
+        minPriceInput.value = '10';
+    });
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        document.querySelector('form').submit();
+    });
+
+    minPrice = minPriceInput.value;
+    maxPrice = maxPriceInput.value;
+
+
+
+
+
+
+
+
+
+
+
+
+        </script>
+
+
         <div class="location">
             <h3>Location</h3>
             <ul>
-                <li><label><input type="checkbox" name="location" value="New York">New York</label></li>
-                <li><label><input type="checkbox" name="location" value="Los Angeles">Los Angeles</label></li>
-                <li><label><input type="checkbox" name="location" value="Chicago">Chicago</label></li>
-                <li><label><input type="checkbox" name="location" value="Miami">Miami</label></li>
-                <li><label><input type="checkbox" name="location" value="San Francisco">San Francisco</label></li>
+                <li><label><input type="checkbox" name="location1" value="Lebanon, Beirut">Lebanon, Beirut</label></li>
+                <li><label><input type="checkbox" name="location2" value="Lebanon, Jbeil">Lebanon, Jbeil</label></li>
+                <li><label><input type="checkbox" name="location3" value="Lebanon, Sidon">Lebanon, Sidon</label></li>
+                <li><label><input type="checkbox" name="location4" value="Lebanon, Tyre">Lebanon, Tyre</label></li>
+                <li><label><input type="checkbox" name="location5" value="Lebanon, Tripoli">Lebanon, Tripoli</label>
+                </li>
             </ul>
         </div>
         <div class="age-range">
-            <h3>Age Range</h3>
-            <input type="range" min="15" max="50" value="30" class="slider">
-            <p>15</p>
-            <p>50+</p>
+            <h3>Age Range: 18 - 60+</h3>
+            <input type="range" min="18" max="60" value="18" class="slider" id="min-age-slider">
+            <input type="range" min="18" max="60" value="60" class="slider" id="max-age-slider">
+            <input type="hidden" name="minAge" value="18">
+            <input type="hidden" name="maxAge" value="60">
         </div>
-    </div>
 
+        <script>
+    const minAgeRangeSlider = document.querySelector('#min-age-slider');
+    const maxAgeRangeSlider = document.querySelector('#max-age-slider');
+    const ageRangeLabel = document.querySelector('.age-range h3');
+    const minAgeInput = document.querySelector('input[name="minAge"]');
+    const maxAgeInput = document.querySelector('input[name="maxAge"]');
+
+    minAgeRangeSlider.addEventListener('input', () => {
+        ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
+        minAgeInput.value = minAgeRangeSlider.value;
+    });
+
+    maxAgeRangeSlider.addEventListener('input', () => {
+       ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
+        maxAgeInput.value = maxAgeRangeSlider.value;
+    });
+
+    minAgeRangeSlider.addEventListener('mouseup', () => {
+        maxAgeInput.value = '60';
+    });
+
+    maxAgeRangeSlider.addEventListener('mouseup', () => {
+        minAgeInput.value = '18';
+    });
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        document.querySelector('form').submit();
+    });
+
+    minAge = minAgeInput.value;
+    maxAge = maxAgeInput.value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </script>
+
+
+    </div>
 
     <div class="container">
         {% if results %}
         {% for result in results %}
         <div class="result">
+            <div class="image">
+                <img src="{{ url_for('static', filename='UPLOAD_FOLDER/' + result[3]) }}" alt="Profile Picture">
+            </div>
             <div class="name">
                 <h2>{{ result[0] }}</h2>
             </div>
-            <p>{{ result[1] }}</p>
+            <div class="bio">
+                <p>{{ result[1] }}</p>
+            </div>
         </div>
         {% endfor %}
         {% else %}
@@ -65,5 +171,8 @@
         {% endif %}
     </div>
     </body>
+
+
 </form>
 </html>
+
