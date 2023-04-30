@@ -117,16 +117,15 @@ def profile():
         return "Error: student not found"
 
 
-@app.route('/tutorprofile.html')
-def tutorprofile():
-    username = session['username']
-
+@app.route('/tutorsearch.html')
+def tutorsearch():
+    username = request.args.get('username')
     tutor = get_tutor_instance(username)
 
     if tutor:
-        return render_template('tutorprofile.html', tutor=tutor)
+        return render_template('tutorsearch.html', tutor=tutor)
     else:
-        return "Error: student not found"
+        return "Error: tutor not found"
 
 
 @app.route('/login.html', methods=['GET', 'POST'])
@@ -451,8 +450,8 @@ def results():
             # Perform search in database with location filter
             cur = conn.cursor()
             cur.execute(
-                "SELECT fullname, bio, subjects, picture FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s)",
-                ('%' + query + '%', '%' + query + '%', '%' + query + '%',)
+                "SELECT fullname, bio, subjects, picture, username FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s)",
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%')
             )
             results = cur.fetchall()
             cur.close()
@@ -466,7 +465,7 @@ def results():
 
             cur = conn.cursor()
             cur.execute(
-                "SELECT fullname, bio, subjects, picture FROM tutor WHERE ((fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND minprice >= %s AND maxprice <= %s AND age >= %s AND age <= %s)",
+                "SELECT fullname, bio, subjects, picture , username FROM tutor WHERE ((fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND minprice >= %s AND maxprice <= %s AND age >= %s AND age <= %s)",
                 ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price, min_age, max_age)
             )
 
@@ -479,7 +478,7 @@ def results():
             print("3")
             cur = conn.cursor()
             cur.execute(
-                "SELECT fullname, bio, subjects, picture FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND (minprice >= %s AND maxprice <= %s) AND location IN ({})".format(
+                "SELECT fullname, bio, subjects, picture , username FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND (minprice >= %s AND maxprice <= %s) AND location IN ({})".format(
                     ','.join(['%s' for _ in range(len(location))])),
                 ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price) + tuple(
                     [x[0] for x in location])
@@ -490,16 +489,16 @@ def results():
             # Render search results template with results
             return render_template('results.html', results=results)
         # Perform search in database
-        cur = conn.cursor()
-        cur.execute(
-            "SELECT fullname, bio FROM tutor WHERE fullname LIKE %s OR bio LIKE %s",
-            ('%' + query + '%', '%' + query + '%')
-        )
-        results = cur.fetchall()
-        cur.close()
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT fullname, bio FROM tutor WHERE fullname LIKE %s OR bio LIKE %s",
+                ('%' + query + '%', '%' + query + '%')
+            )
+            results = cur.fetchall()
+            cur.close()
 
-        # Render search results template with results
-        return render_template('results.html', results=results)
+            # Render search results template with results
+            return render_template('results.html', results=results)
 
 
 @app.route('/download-cv/<cv_name>')
