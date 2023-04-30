@@ -8,7 +8,6 @@ import os
 
 
 app = Flask(__name__)
-app.debug = True
 app.config['SECRET_KEY'] = 'secret'
 app.config['SESSION_TYPE'] = 'filesystem'
 
@@ -16,7 +15,6 @@ Session(app)
 
 socketio = SocketIO(app, manage_session=False)
 
-app = Flask(__name__)
 app.secret_key = 'mysecretkey'
 
 # Define database connection parameters
@@ -192,7 +190,7 @@ def login():
 def loggedin():
     if 'username' in session and session['user_type'] == 'student':
         username = session['username']
-        return render_template('loggedin.html', username=username)
+        return render_template('loggedin.html', username=username, student=get_student_instance(username))
     else:
         return render_template('login.html')
 
@@ -201,7 +199,7 @@ def loggedin():
 def loggedintutor():
     if 'username' in session and session['user_type'] == 'tutor':
         username = session['username']
-        return render_template('loggedintutor.html', username=username)
+        return render_template('loggedintutor.html', username=username, tutor=get_tutor_instance(username))
     else:
         return render_template('login.html')
 
@@ -542,31 +540,31 @@ def download_doc(doc_name):
 
 
 
-@app.route('/chat', methods=['GET', 'POST'])
+@app.route('/chat.html', methods=['GET', 'POST'])
 def chat():
 
-        username = request.form['karim@lau.edu']
-        room = request.form['dany@lau.edu']
+        username = session['username']
+        room = 'dany@lau.edu'
         #Store the data in session
         session['username'] = username
         session['room'] = room
         return render_template('chat.html', session = session)
 
 
-@socketio.on('join', namespace='/chat')
+@socketio.on('join', namespace='/chat.html')
 def join(message):
     room = session.get('room')
     join_room(room)
     emit('status', {'msg':  session.get('username') + ' has entered the room.'}, room=room)
 
 
-@socketio.on('text', namespace='/chat')
+@socketio.on('text', namespace='/chat.html')
 def text(message):
     room = session.get('room')
     emit('message', {'msg': session.get('username') + ' : ' + message['msg']}, room=room)
 
 
-@socketio.on('left', namespace='/chat')
+@socketio.on('left', namespace='/chat.html')
 def left(message):
     room = session.get('room')
     username = session.get('username')
