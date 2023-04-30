@@ -19,7 +19,7 @@
     <header>
 		<nav>
 			<ul class="nav-menu" style="margin-top: 1rem;">
-				<li><a href="loggedintutor.html?username={{ session['username'] }}" class="nav-link">Search for tutors </a></li>
+				<li><a href="home.html" class="nav-link">Search for tutors </a></li>
 			</ul>
 		</nav>
 	</header>
@@ -39,6 +39,11 @@
             <img class="profile_img" src="/static/UPLOAD_FOLDER/{{ tutor['picture'] }}" alt="student dp">
             <h3>{{ tutor['fullname'] }}</h3>
             <h3>Average Rating: {{ tutor['avgrating'] }} </h3>
+            {% if 'username' in session and session['user_type'] == 'student' %}
+            <button class="btn btn-primary btn-lg mt-2" id="chatBtn">Chat</button>
+            {% else %}
+            <a href="/login.html" class="btn btn-primary btn-lg mt-2" id="loginBtn">Login as a student</a>
+            {% endif %}
           </div>
         </div>
       </div>

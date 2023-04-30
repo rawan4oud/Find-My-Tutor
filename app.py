@@ -102,6 +102,7 @@ def home():
 
 @app.route('/logout')
 def logout():
+    session.clear()
     return render_template("home.html")
 
 
@@ -122,10 +123,8 @@ def tutorsearch():
     username = request.args.get('username')
     tutor = get_tutor_instance(username)
 
-    if tutor:
-        return render_template('tutorsearch.html', tutor=tutor)
-    else:
-        return "Error: tutor not found"
+    return render_template('tutorsearch.html', tutor=tutor, username=username)
+
 
 
 @app.route('/login.html', methods=['GET', 'POST'])
