@@ -540,7 +540,7 @@ def download_doc(doc_name):
 
 
 
-@app.route('/chat', methods=['GET', 'POST'])
+@app.route('/chat.html', methods=['GET', 'POST'])
 def chat():
 
         username = session['username']
@@ -551,20 +551,20 @@ def chat():
         return render_template('chat.html', session = session)
 
 
-@socketio.on('join', namespace='/chat')
+@socketio.on('join', namespace='/chat.html')
 def join(message):
     room = session.get('room')
     join_room(room)
     emit('status', {'msg':  session.get('username') + ' has entered the room.'}, room=room)
 
 
-@socketio.on('text', namespace='/chat')
+@socketio.on('text', namespace='/chat.html')
 def text(message):
     room = session.get('room')
     emit('message', {'msg': session.get('username') + ' : ' + message['msg']}, room=room)
 
 
-@socketio.on('left', namespace='/chat')
+@socketio.on('left', namespace='/chat.html')
 def left(message):
     room = session.get('room')
     username = session.get('username')
