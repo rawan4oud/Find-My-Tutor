@@ -169,6 +169,9 @@ def get_recommendations():
 def home():
     return render_template("home.html")
 
+@app.route('/course.html', methods=['GET', 'POST'])
+def course():
+    return render_template("course.html")
 
 
 
