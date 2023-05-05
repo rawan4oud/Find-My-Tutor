@@ -32,6 +32,7 @@
 </head>
 
 <body>
+    <form action="/results.html" method="POST">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -79,7 +80,13 @@
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
+                    {% if 'username' in session %}
                     <li><a href="studentprofile.html?username={{ session['username'] }}" class="nav-link">My Profile</a>
+                  
+                    {% else %}
+                    <li><a href="login.html" class="nav-link">My Profile</a>
+                    {% endif %}
+                    
                     </li>
                     <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
                 </ul>
@@ -97,7 +104,7 @@
                 <input type="text" placeholder="Search..." name="query">
                 <button type="submit">Search</button>
             </div>
-            </form>
+           
         </div>
     </section>
     <div class="wrapper-result">
@@ -153,14 +160,17 @@
             <div class="location">
                 <h3>Location</h3>
                 <ul>
-                    <li><label><input type="checkbox" name="location1" value="Lebanon, Beirut">Lebanon, Beirut</label>
+                    <li><label><input type="checkbox" name="location1" value="Aakar">Aakar</label>
                     </li>
-                    <li><label><input type="checkbox" name="location2" value="Lebanon, Jbeil">Lebanon, Jbeil</label>
+                    <li><label><input type="checkbox" name="location2" value="Beirut">Beirut</label>
                     </li>
-                    <li><label><input type="checkbox" name="location3" value="Lebanon, Sidon">Lebanon, Sidon</label>
+                    <li><label><input type="checkbox" name="location3" value="Baalbek-Hermel">Baalbek-Hermel</label>
                     </li>
-                    <li><label><input type="checkbox" name="location4" value="Lebanon, Tyre">Lebanon, Tyre</label></li>
-                    <li><label><input type="checkbox" name="location5" value="Lebanon, Tripoli">Lebanon, Tripoli</label>
+                    <li><label><input type="checkbox" name="location4" value="Beqaa">Beqaa</label></li>
+                    <li><label><input type="checkbox" name="location5" value="Mount Lebanon">Mount Lebanon</label>
+                        <li><label><input type="checkbox" name="location5" value="Nabatieh">Nabatieh</label>
+                            <li><label><input type="checkbox" name="location5" value="North Lebanon">North Lebanon</label>
+                                <li><label><input type="checkbox" name="location5" value="South Lebanon">South Lebanon</label>
                     </li>
                 </ul>
             </div>
@@ -230,9 +240,11 @@
             {% endif %}
         </div>
     </div>
+</form>
+<div id="recommendations"></div>
 </body>
 
 
-</form>
+
 
 </html>

@@ -513,7 +513,6 @@ def search():
     return render_template('search.html')
 
 
-# Define route for search results page
 @app.route('/results.html', methods=['GET', 'POST'])
 def results():
     if request.method == 'POST':
@@ -528,10 +527,11 @@ def results():
 
         location = [loc for loc in [location1, location2, location3, location4, location5] if loc != []]
         min_price = request.form.get('minPrice')
+
         max_price = request.form.get('maxPrice')
         min_age = request.form.get('minAge')
         max_age = request.form.get('maxAge')
-
+        print(min_age)
         # age_range = request.args.get('age_range')
 
         if ((not location) and (not min_price) and (not max_price)):
@@ -554,39 +554,17 @@ def results():
 
             cur = conn.cursor()
             cur.execute(
-                "SELECT fullname, bio, subjects, picture , username FROM tutor WHERE ((fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND minprice >= %s AND maxprice <= %s AND age >= %s AND age <= %s)",
-                ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price, min_age, max_age)
+                "SELECT fullname, bio, subjects, picture, username FROM tutor "
+                "WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) "
+                "AND (minprice BETWEEN %s AND %s OR maxprice BETWEEN %s AND %s) "
+                "AND age BETWEEN %s AND %s",
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%',
+                 min_price, max_price, min_price, max_price, min_age, max_age)
             )
 
             results = cur.fetchall()
 
             cur.close()
-            return render_template('results.html', results=results)
-
-        else:
-            print("3")
-            cur = conn.cursor()
-            cur.execute(
-                "SELECT fullname, bio, subjects, picture , username FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND (minprice >= %s AND maxprice <= %s) AND location IN ({})".format(
-                    ','.join(['%s' for _ in range(len(location))])),
-                ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price) + tuple(
-                    [x[0] for x in location])
-            )
-
-            results = cur.fetchall()
-            cur.close()
-            # Render search results template with results
-            return render_template('results.html', results=results)
-            # Perform search in database
-            cur = conn.cursor()
-            cur.execute(
-                "SELECT fullname, bio FROM tutor WHERE fullname LIKE %s OR bio LIKE %s",
-                ('%' + query + '%', '%' + query + '%')
-            )
-            results = cur.fetchall()
-            cur.close()
-
-            # Render search results template with results
             return render_template('results.html', results=results)
 
 
