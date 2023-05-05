@@ -39,11 +39,11 @@
             <img class="profile_img" src="/static/UPLOAD_FOLDER/{{ tutor['picture'] }}" alt="student dp">
             <h3>{{ tutor['fullname'] }}</h3>
             <h3>Average Rating: {{ tutor['avgrating'] }} </h3>
-           <!-- {% if 'username' in session and session['user_type'] == 'student' %}-->
+            {% if 'username' in session and session['user_type'] == 'student' %}
            <a href="/chat.html" class="btn btn-primary btn-lg mt-2" id="chat-btn">Start Chat</a>
-            <!--  {% else %}-->
+            {% else %}
             <a href="/login.html" class="btn btn-primary btn-lg mt-2" id="loginBtn">Login as a student</a>
-             <!-- {% endif %}-->
+             {% endif %}
           </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

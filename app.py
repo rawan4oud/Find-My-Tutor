@@ -170,6 +170,8 @@ def home():
     return render_template("home.html")
 
 
+
+
 @app.route('/studentprofile.html')
 def profile():
     username = session['username']
