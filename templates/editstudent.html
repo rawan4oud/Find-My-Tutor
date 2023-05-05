@@ -1,55 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <script>
-    console.log('{{ interests }}');
-</script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Find My Tutor</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <div class="container">
-    <div class="image1">
-      <img src="static/tutor.jpg" alt="Your Image">
-    </div>
-    <div class="wrapper">
-      <div class="registration_form">
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Become a student</title>
+    <link rel="stylesheet" href="static/assets/css/signup.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>Lean Anything Today!</header>
+      <div class="progress-bar">
+        <div class="step">
+          <p>Name</p>
+          <div class="bullet">
+            <span>1</span>
+          </div>
+          <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+          <p>Email</p>
+          <div class="bullet">
+            <span>2</span>
+          </div>
+          <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+          <p>Information</p>
+          <div class="bullet">
+            <span>3</span>
+          </div>
+          <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+          <p>Submit</p>
+          <div class="bullet">
+            <span>4</span>
+          </div>
+          <div class="check fas fa-check"></div>
+        </div>
+      </div>
+      <div class="form-outer">
         <form method="post" enctype="multipart/form-data">
-          <div class="form_wrap">
-            <h2>Edit your Profile</h2>
-            <div class="input_grp">
-              <div class="input_wrap">
-                <label for="fname">First Name</label>
-                <input type="text" name="fname" value="{{ student['fullname'].split()[0] }}">
-              </div>
-              <div class="input_wrap">
-                <label for="lname">Last Name</label>
-                <input type="text" name="lname"  value="{{ student['fullname'].split()[1] }}">
-              </div>
+          <div class="page slide-page">
+            <div class="title">Basic Info:</div>
+            <div class="field">
+              <div class="label">First Name</div>
+              <input type="text" name="fname" value="{{ student['fullname'].split()[0] }}">
             </div>
-            <div class="input_wrap">
-              <label for="password">Password</label>
-              <input type="password" name="password"  value="{{ student['password'] }}" placeholder="password">
+            <div class="field">
+              <div class="label">Last Name</div>
+              <input type="text"  name="lname" value="{{ student['fullname'].split()[1] }}">
             </div>
-            <div class="input_wrap">
-              <label for="gender">Gender</label>
-              <input type="text" name="gender"  value="{{ student['gender'] }}">
+            <div class="field">
+              <button class="firstNext next">Next</button>
             </div>
-            <div class="input_grp">
-              <div class="input_wrap">
-                <label for="age">Age</label>
-                <input type="number" name="age" min="0"  value="{{ student['age'] }}">
-              </div>
-              <div class="input_wrap" style="margin-left: 10px;">
-                <label for="contact">Contact</label>
-                <input type="tel" name="contact"  value="{{ student['contact'] }}">
-              </div>
+          </div>
+
+          <div class="page">
+            <div class="title">User Info:</div>
+            <div class="field">
+              <div class="label">Password</div>
+              <input type="password" name="password" value="{{ student['password'] }}" placeholder="password">
             </div>
-            <div class="input_wrap">
-              <label for="languages">Languages</label>
+            <div class="field btns">
+              <button class="prev-1 prev">Previous</button>
+              <button class="next-1 next">Next</button>
+            </div>
+          </div>
+
+          <div class="page">
+            <div class="title">Personal Information:</div>
+            <div class="field">
+              <div class="label">Age</div>
+              <input type="number" name="age" min="0" value="{{ student['age'] }}">
+            </div>
+            <div class="field">
+              <div class="label">Gender</div>
+              <input type="text" name="gender" value="{{ student['gender'] }}">
+            </div>
+            <div class="field">
+              <div class="label">Contact</div>
+              <input type="number" name="contact" min="0" value="{{ student['contact'] }}">
+            </div>
+            <div class="field">
+              <div class="label">Languages</div>
               <select name="languages" multiple>
                 <option value="English" {% if 'English' in student['languages'] %}selected{% endif %}>English</option>
                 <option value="Arabic" {% if 'Arabic' in student['languages'] %}selected{% endif %}>Arabic</option>
@@ -57,28 +91,37 @@
                 <option value="French" {% if 'French' in student['languages'] %}selected{% endif %}>French</option>
                 <option value="German" {% if 'German' in student['languages'] %}selected{% endif %}>German</option>
                 <option value="Chinese" {% if 'Chinese' in student['languages'] %}selected{% endif %}>Chinese</option>
-                <!-- Add more language options here -->
               </select>
             </div>
-            <div class="input_wrap">
-              <label for="interests">Here are our given subjects</label>
+            <div class="field btns">
+              <button class="prev-2 prev">Previous</button>
+              <button class="next-2 next">Next</button>
+            </div>
+          </div>
+
+          <div class="page">
+            <div class="title">Interest:</div>
+            <div class="field">
+              <div class="label">Here are our given subjects</div>
               <select name="interests" multiple>
                 {% for interest in all_interests %}
-                  <option value="{{ interest }}" {% if interest in student['interests'] %}selected{% endif %}>{{ interest }}</option>
+                <option value="{{ interest }}" {% if interest in student['interests'] %}selected{% endif %}>{{ interest }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="input_wrap">
+            <div class="field">
               <label for="image">Image</label>
               <input type="file" name="image">
             </div>
-            <div class="input_wrap">
-              <input type="submit" value="Submit Changes" class="submit_btn">
+            <div class="field btns">
+              <button class="prev-3 prev">Previous</button>
+            <button type="submit" value="Register Now" >Submit</button>
             </div>
           </div>
         </form>
       </div>
     </div>
-  </div>
-</body>
+    <script src="static/assets/js/signup.js"></script>
+
+  </body>
 </html>
