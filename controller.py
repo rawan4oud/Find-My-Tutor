@@ -46,6 +46,22 @@ def get_course(username: str):
 
     return results
 
+def get_rating(username: str):
+    with mysql.connector.connect(
+            host="localhost",
+            database="newdb",
+            user="root",
+            password=""
+    ) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT avgrating FROM TUTOR WHERE username = '{username}'")
+        result = cursor.fetchone()
+
+    if result is not None:
+        return float(result[0])
+    else:
+        return None
+
 
 def get_course2(username: str):
     with mysql.connector.connect(
@@ -57,5 +73,18 @@ def get_course2(username: str):
         cursor = conn.cursor(dictionary=True)
         cursor.execute(f"SELECT * FROM learning WHERE tutuser = '{username}'")
         results = cursor.fetchall()
+
+    return results
+def get_review(username: str):
+    with mysql.connector.connect(
+            host="localhost",
+            database="newdb",
+            user="root",
+            password=""
+    ) as conn:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(f"SELECT review, studuser, coursename FROM review WHERE tutuser = '{username}'")
+        results = cursor.fetchall()
+        print(results)
 
     return results

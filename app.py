@@ -107,7 +107,37 @@ def update_tutor(username, fname, lname, password, age, gender, contact, image, 
     )
     conn.commit()
     cur.close()
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    data = request.json
+    course = data['course']
+    tutor = data['tutor']
+    feedback = data['feedback']
+    rating = data['rating']
+    username = session['username']
 
+    cnx = mysql.connector.connect(
+        host="localhost",
+        database="newdb",
+        user="root",
+        password=""
+    )
+    cursor = cnx.cursor()
+
+    # Insert the feedback into the database
+    newrating = float(get_rating(tutor))
+    rating2 = float(rating)
+    newavg = (rating2 + newrating) / 2.0
+    print(newavg)
+    query2 = "UPDATE TUTOR SET avgrating= %s WHERE username = %s"
+    values2 = (newavg,tutor)
+    cursor.execute(query2, values2)
+    query = "INSERT INTO review (tutuser, studuser, review, coursename) VALUES (%s, %s, %s, %s)"
+    values = (tutor, username, feedback, course)
+    cursor.execute(query, values)
+    cnx.commit()
+
+    return 'Feedback successfully submitted'
 
 @app.route('/recommendations', methods=['GET'])
 def get_recommendations():
@@ -193,9 +223,11 @@ def tutorprofile():
     tutor = get_tutor_instance(username)
 
     course = get_course2(username)
-    print(course)
+
+    review = get_review(username)
+
     if tutor:
-        return render_template('tutorprofile.html', tutor=tutor, course=course)
+        return render_template('tutorprofile.html', tutor=tutor, course=course, review=review)
     else:
         return "Error: student not found"
 
@@ -204,8 +236,10 @@ def tutorprofile():
 def tutorsearch():
     username = request.args.get('username')
     tutor = get_tutor_instance(username)
+    course = get_course2(username)
 
-    return render_template('tutorsearch.html', tutor=tutor, username=username)
+    review = get_review(username)
+    return render_template('tutorsearch.html', tutor=tutor, username=username, course=course, review=review)
 
 
 @app.route('/logout')
@@ -246,7 +280,7 @@ def login():
             else:
                 session['username'] = email
                 session['user_type'] = 'student'
-                print("herehere")
+
                 return render_template('loggedin.html', student=get_student_instance(email))
         conn.commit()
         conn.close()
@@ -564,7 +598,19 @@ def results():
 
             cur.close()
             return render_template('results.html', results=results)
+        else:
+            print("3")
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT fullname, bio, subjects, picture , username FROM tutor WHERE (fullname LIKE %s OR bio LIKE %s OR subjects LIKE %s) AND (minprice >= %s AND maxprice <= %s) AND location IN ({})".format(
+                    ','.join(['%s' for _ in range(len(location))])),
+                ('%' + query + '%', '%' + query + '%', '%' + query + '%', min_price, max_price) + tuple(
+                    [x[0] for x in location]))
 
+            results = cur.fetchall()
+
+            cur.close()
+            return render_template('results.html', results=results)
 
 @app.route('/download-cv/<cv_name>')
 def download_cv(cv_name):
