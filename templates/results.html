@@ -3,6 +3,40 @@
 <head>
     <title>Search Results</title>
     <link rel="stylesheet" href="static/results.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Delay the popup message by 5 seconds
+            setTimeout(function() {
+                $.ajax({
+                    url: '/recommendations',
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.recommendations.length > 0) {
+                            var message = 'We highly recommend that you try these subjects: ' + response.recommendations.join(', ');
+                            var popup = $('<div></div>').text(message);
+                            popup.css({
+                                'position': 'fixed',
+                                'bottom': '20px',
+                                'right': '20px',
+                                'background-color': '#f44336',
+                                'color': '#fff',
+                                'padding': '10px',
+                                'border-radius': '5px',
+                                'z-index': '9999'
+                            });
+                            $('#recommendations').append(popup);
+                            // Hide the popup message after 10 seconds
+                            popup.fadeOut(10000);
+                        }
+                    }
+                });
+            }, 5000);
+        });
+
+
+
+    </script>
 </head>
 <form action="/results.html" method="POST">
     <body>
@@ -73,12 +107,6 @@
 
 
 
-
-
-
-
-
-
         </script>
 
 
@@ -139,13 +167,6 @@
 
 
 
-
-
-
-
-
-
-
         </script>
 
 
@@ -155,18 +176,17 @@
         {% if results %}
         {% for result in results %}
         <div class="result">
-            <div class="image">
-                <img src="{{ url_for('static', filename='UPLOAD_FOLDER/' + result[3]) }}" alt="Profile Picture">
-            </div>
-            <div class="name">
-                <h2>{{ result[0] }}</h2>
-            </div>
-            <div class="bio">
-                <p>{{ result[1] }}</p>
-            </div>
-            <div>
-            <a href="tutorsearch.html?username={{ result[4] }}" class="nav-link">My Profile</a>
-        </div>
+            <a href="tutorsearch.html?username={{ result[4] }}" class="nav-link">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='UPLOAD_FOLDER/' + result[3]) }}" alt="Profile Picture">
+                </div>
+                <div class="name">
+                    <h2>{{ result[0] }}</h2>
+                </div>
+                <div class="bio">
+                    <p>{{ result[1] }}</p>
+                </div>
+            </a>
         </div>
         {% endfor %}
         {% else %}
@@ -175,7 +195,7 @@
     </div>
     </body>
 
-
+    <div id="recommendations"></div>
 </form>
 </html>
 

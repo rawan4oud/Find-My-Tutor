@@ -5,7 +5,11 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 from controller import *
 import os
-
+import numpy as np
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.metrics.pairwise import cosine_similarity
+import mysql.connector
+from flask import request, jsonify
 
 app = Flask(__name__)
 app.debug = True
@@ -107,11 +111,63 @@ def update_tutor(username, fname, lname, password, age, gender, contact, image, 
     cur.close()
 
 
+@app.route('/recommendations', methods=['GET'])
+def get_recommendations():
+    if 'username' in session and session['user_type'] == 'student':
+        # Connect to MySQL database
+        cnx = mysql.connector.connect(
+            host="localhost",
+            database="newdb",
+            user="root",
+            password=""
+        )
+        cursor = cnx.cursor()
+
+        # Retrieve interests of the logged-in student from the database
+        query = f"SELECT interests FROM student WHERE username='{session['username']}'"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        if result is None:
+            return jsonify({'error': 'No interests found for the logged-in user.'}), 404
+            print("no")
+
+        # Create dictionary of interests for the logged-in student
+        interests = set(result[0].split(", "))
+
+        # Retrieve interests of all students from the database
+        query = "SELECT username, interests FROM student;"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        # Create dictionary of interests for each student
+        interest_dict = {}
+        for row in rows:
+            if row[0] != session['username']:
+                interest_dict[row[0]] = set(row[1].split(", "))
+        print(interest_dict)
+
+        # Find users with at least one common interest
+        common_interest_users = []
+        print(interests)
+        for user, user_interests in interest_dict.items():
+            if len(interests & user_interests) > 0:
+                common_interest_users.append(user)
+        print(common_interest_users)
+
+        # Find not shared interests of common interest users
+        recommended_interests = set()
+        for user in common_interest_users:
+            recommended_interests.update(interest_dict[user] - interests)
+
+        # Return the recommendations as a JSON response
+        return jsonify({'recommendations': list(recommended_interests)}), 200
+    else:
+        return jsonify({'error': 'Unauthorized access.'}), 401
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template("home.html")
-
-
 
 
 @app.route('/studentprofile.html')
@@ -120,8 +176,9 @@ def profile():
 
     student = get_student_instance(username)
 
+    course = get_course(username)
     if student:
-        return render_template('studentprofile.html', student=student)
+        return render_template('studentprofile.html', student=student, course=course)
     else:
         return "Error: student not found"
 
@@ -132,10 +189,13 @@ def tutorprofile():
 
     tutor = get_tutor_instance(username)
 
+    course = get_course2(username)
+    print(course)
     if tutor:
-        return render_template('tutorprofile.html', tutor=tutor)
+        return render_template('tutorprofile.html', tutor=tutor, course=course)
     else:
         return "Error: student not found"
+
 
 @app.route('/tutorsearch.html')
 def tutorsearch():
@@ -149,6 +209,7 @@ def tutorsearch():
 def logout():
     session.clear()
     return render_template("home.html")
+
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
@@ -182,6 +243,7 @@ def login():
             else:
                 session['username'] = email
                 session['user_type'] = 'student'
+                print("herehere")
                 return render_template('loggedin.html', student=get_student_instance(email))
         conn.commit()
         conn.close()
@@ -510,7 +572,7 @@ def results():
             cur.close()
             # Render search results template with results
             return render_template('results.html', results=results)
-        # Perform search in database
+            # Perform search in database
             cur = conn.cursor()
             cur.execute(
                 "SELECT fullname, bio FROM tutor WHERE fullname LIKE %s OR bio LIKE %s",
@@ -541,23 +603,21 @@ def download_doc(doc_name):
     return send_file(file_path, as_attachment=True)
 
 
-
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-
-        username = request.form['karim@lau.edu']
-        room = request.form['dany@lau.edu']
-        #Store the data in session
-        session['username'] = username
-        session['room'] = room
-        return render_template('chat.html', session = session)
+    username = request.form['karim@lau.edu']
+    room = request.form['dany@lau.edu']
+    # Store the data in session
+    session['username'] = username
+    session['room'] = room
+    return render_template('chat.html', session=session)
 
 
 @socketio.on('join', namespace='/chat')
 def join(message):
     room = session.get('room')
     join_room(room)
-    emit('status', {'msg':  session.get('username') + ' has entered the room.'}, room=room)
+    emit('status', {'msg': session.get('username') + ' has entered the room.'}, room=room)
 
 
 @socketio.on('text', namespace='/chat')

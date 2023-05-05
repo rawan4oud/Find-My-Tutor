@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Find My Tutor</title>
     <link rel="stylesheet" type="text/css" href="static/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Delay the popup message by 5 seconds
+            setTimeout(function() {
+                $.ajax({
+                    url: '/recommendations',
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.recommendations.length > 0) {
+                            var message = 'We highly recommend that you try these subjects: ' + response.recommendations.join(', ');
+                            var popup = $('<div></div>').text(message);
+                            popup.css({
+                                'position': 'fixed',
+                                'bottom': '20px',
+                                'right': '20px',
+                                'background-color': '#f44336',
+                                'color': '#fff',
+                                'padding': '10px',
+                                'border-radius': '5px',
+                                'z-index': '9999'
+                            });
+                            $('#recommendations').append(popup);
+                            // Hide the popup message after 10 seconds
+                            popup.fadeOut(10000);
+                        }
+                    }
+                });
+            }, 5000);
+        });
 
+
+
+    </script>
+</head>
 <body>
 <header>
     <nav>
@@ -18,7 +50,6 @@
         </ul>
     </nav>
 </header>
-
 <section class="home" id="home">
     <div class="head_container">
         <div class="box">
@@ -37,7 +68,6 @@
         </div>
     </div>
 </section>
-
+<div id="recommendations"></div>
 </body>
-
 </html>

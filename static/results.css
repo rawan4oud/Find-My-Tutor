@@ -227,17 +227,42 @@ input[type="range"] {
 }
 
 .image {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 710px;
-  margin-bottom: 60px;
-  border: 4px solid #ccc;
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+    overflow: hidden;
+    margin-right: 700px;
+    margin-bottom: 50px;
+    border: 4px solid #ccc;
 }
 
 .image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+a.nav-link:link, a.nav-link:visited, a.nav-link:hover, a.nav-link:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+.popup-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #f44336;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  animation-name: fade-in-out;
+  animation-duration: 10s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in-out {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
