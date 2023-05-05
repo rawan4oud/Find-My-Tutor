@@ -1442,3 +1442,172 @@ section {
   font-size: 16px;
   cursor: pointer;
 }
+
+
+
+
+.result {
+  position: relative;
+  width: 800px;
+  height: 150px;
+  background-color: #fff;
+  border: 3px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.name {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(97px, -10px);
+}
+
+.bio {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(100px, 30px);
+  width: calc(100% - 200px); /* adjust the width as needed */
+  word-wrap: break-word;
+}
+
+
+
+.result:hover {
+  border-color: #0d6ad7;
+}
+
+/* Change the background color of the box when pressed */
+.result:active {
+  background-color: #ccc;
+}
+
+.filter-container {
+  flex-basis: 25%;
+  transform: translate(50%,20%);
+  display: flex;
+  flex-direction: column;
+  float: left;
+  gap: 20px;}
+
+.filter-header h2 {
+font-weight: normal;
+margin-top: -10px;
+}
+
+.location ul {
+list-style: none;
+}
+
+label {
+display: block;
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+
+.sliders_control {
+  position: relative;
+  min-height: 50px;
+}
+
+.form_control {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  color: #635a5a;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  background: #f7f7f7;
+}
+
+input[type=range]::-webkit-slider-thumb:active {
+  box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+  -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+}
+
+input[type="number"] {
+  color: #8a8383;
+  width: 50px;
+  height: 30px;
+  font-size: 20px;
+  border: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   opacity: 1;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  background-color: #C6C6C6;
+  pointer-events: none;
+}
+
+#fromSlider {
+  height: 0;
+  z-index: 1;
+}
+
+.image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 710px;
+  margin-bottom: 60px;
+  border: 4px solid #ccc;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.container-results{
+  flex-basis: 75%;
+  float: right;
+  transform: translate(35%,20%);
+  display: flex;
+  flex-direction: column;
+
+}
+.wrapper-result {
+  display: flex;
+  flex-wrap: wrap;
+}

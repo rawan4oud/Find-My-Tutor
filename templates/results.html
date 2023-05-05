@@ -1,181 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Search Results</title>
-    <link rel="stylesheet" href="static/results.css">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Find My Tutor</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="static/assets/img/favicon.png" rel="icon">
+    <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="static/assets/css/newhome.css" rel="stylesheet">
+
+
 </head>
-<form action="/results.html" method="POST">
-    <body>
-    <header>
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="#aboutus" class="nav-link">About Us</a></li>
-                <li><a href="#contactus" class="nav-link">Contact Us</a></li>
-                <li><a href="studentprofile.html?username={{ username }}" class="nav-link">My Profile</a></li>
-                <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
-            </ul>
-        </nav>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top d-flex align-items-center">
+        <div class="container d-flex align-items-center">
+
+            <div class="logo me-auto">
+                <h1><a href="/">Find My Tytor</a></h1>
+                <!-- Uncomment below if you prefer to use an image logo -->
+                <!-- <a href="index.html"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            </div>
+
+            <nav id="navbar" class="navbar order-last order-lg-0">
+                <ul>
+                    <li><a href="studentprofile.html?username={{ session['username'] }}" class="nav-link">My Profile</a>
+                    </li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
+
+        </div>
     </header>
-
-    <div class="search-box">
-        <input type="text" placeholder="Search..." name="query">
-        <button type="submit">Search</button>
-    </div>
-
-    <div class="filter-container">
-        <div class="filter-header">
-            <h2>Filters</h2>
-        </div>
-
-        <div class="price-range">
-            <h3>Price Range: $10 - $200+</h3>
-            <input type="range" min="10" max="200" value="10" class="slider" id="min-price-slider">
-            <input type="range" min="10" max="200" value="200" class="slider" id="max-price-slider">
-            <input type="hidden" name="minPrice" value="10">
-            <input type="hidden" name="maxPrice" value="200">
-        </div>
-
-        <script>
-    const minPriceRangeSlider = document.querySelector('#min-price-slider');
-    const maxPriceRangeSlider = document.querySelector('#max-price-slider');
-    const priceRangeLabel = document.querySelector('.price-range h3');
-    const minPriceInput = document.querySelector('input[name="minPrice"]');
-    const maxPriceInput = document.querySelector('input[name="maxPrice"]');
-
-    minPriceRangeSlider.addEventListener('input', () => {
-        priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
-        minPriceInput.value = minPriceRangeSlider.value;
-    });
-
-    maxPriceRangeSlider.addEventListener('input', () => {
-        priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
-        maxPriceInput.value = maxPriceRangeSlider.value;
-    });
-
-    minPriceRangeSlider.addEventListener('mouseup', () => {
-        maxPriceInput.value = '200';
-    });
-
-    maxPriceRangeSlider.addEventListener('mouseup', () => {
-        minPriceInput.value = '10';
-    });
-
-    document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        document.querySelector('form').submit();
-    });
-
-    minPrice = minPriceInput.value;
-    maxPrice = maxPriceInput.value;
-
-
-
-
-
-
-
-
-
-
-
-
-        </script>
-
-
-        <div class="location">
-            <h3>Location</h3>
-            <ul>
-                <li><label><input type="checkbox" name="location1" value="Lebanon, Beirut">Lebanon, Beirut</label></li>
-                <li><label><input type="checkbox" name="location2" value="Lebanon, Jbeil">Lebanon, Jbeil</label></li>
-                <li><label><input type="checkbox" name="location3" value="Lebanon, Sidon">Lebanon, Sidon</label></li>
-                <li><label><input type="checkbox" name="location4" value="Lebanon, Tyre">Lebanon, Tyre</label></li>
-                <li><label><input type="checkbox" name="location5" value="Lebanon, Tripoli">Lebanon, Tripoli</label>
-                </li>
-            </ul>
-        </div>
-        <div class="age-range">
-            <h3>Age Range: 18 - 60+</h3>
-            <input type="range" min="18" max="60" value="18" class="slider" id="min-age-slider">
-            <input type="range" min="18" max="60" value="60" class="slider" id="max-age-slider">
-            <input type="hidden" name="minAge" value="18">
-            <input type="hidden" name="maxAge" value="60">
-        </div>
-
-        <script>
-    const minAgeRangeSlider = document.querySelector('#min-age-slider');
-    const maxAgeRangeSlider = document.querySelector('#max-age-slider');
-    const ageRangeLabel = document.querySelector('.age-range h3');
-    const minAgeInput = document.querySelector('input[name="minAge"]');
-    const maxAgeInput = document.querySelector('input[name="maxAge"]');
-
-    minAgeRangeSlider.addEventListener('input', () => {
-        ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
-        minAgeInput.value = minAgeRangeSlider.value;
-    });
-
-    maxAgeRangeSlider.addEventListener('input', () => {
-       ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
-        maxAgeInput.value = maxAgeRangeSlider.value;
-    });
-
-    minAgeRangeSlider.addEventListener('mouseup', () => {
-        maxAgeInput.value = '60';
-    });
-
-    maxAgeRangeSlider.addEventListener('mouseup', () => {
-        minAgeInput.value = '18';
-    });
-
-    document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        document.querySelector('form').submit();
-    });
-
-    minAge = minAgeInput.value;
-    maxAge = maxAgeInput.value;
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </script>
-
-
-    </div>
-
-    <div class="container">
-        {% if results %}
-        {% for result in results %}
-        <div class="result">
-            <div class="image">
-                <img src="{{ url_for('static', filename='UPLOAD_FOLDER/' + result[3]) }}" alt="Profile Picture">
+    <!-- End Header -->
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+        <div class="container text-center text-md-left" data-aos="fade-up">
+            <h1>Find your tutor</h1>
+            <div class="search-box">
+                <input type="text" placeholder="Search..." name="query">
+                <button type="submit">Search</button>
             </div>
-            <div class="name">
-                <h2>{{ result[0] }}</h2>
-            </div>
-            <div class="bio">
-                <p>{{ result[1] }}</p>
-            </div>
-            <div>
-            <a href="tutorsearch.html?username={{ result[4] }}" class="nav-link">My Profile</a>
+            </form>
         </div>
+    </section>
+    <div class="wrapper-result">
+        <div class="filter-container">
+            <div class="filter-header">
+                <h2>Filters</h2>
+            </div>
+
+            <div class="price-range">
+                <h3>Price Range: $10 - $200+</h3>
+                <input type="range" min="10" max="200" value="10" class="slider" id="min-price-slider">
+                <input type="range" min="10" max="200" value="200" class="slider" id="max-price-slider">
+                <input type="hidden" name="minPrice" value="10">
+                <input type="hidden" name="maxPrice" value="200">
+            </div>
+
+            <script>
+                const minPriceRangeSlider = document.querySelector('#min-price-slider');
+                const maxPriceRangeSlider = document.querySelector('#max-price-slider');
+                const priceRangeLabel = document.querySelector('.price-range h3');
+                const minPriceInput = document.querySelector('input[name="minPrice"]');
+                const maxPriceInput = document.querySelector('input[name="maxPrice"]');
+
+                minPriceRangeSlider.addEventListener('input', () => {
+                    priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
+                    minPriceInput.value = minPriceRangeSlider.value;
+                });
+
+                maxPriceRangeSlider.addEventListener('input', () => {
+                    priceRangeLabel.textContent = `Price Range: $${minPriceRangeSlider.value} - $${maxPriceRangeSlider.value}+`;
+                    maxPriceInput.value = maxPriceRangeSlider.value;
+                });
+
+                minPriceRangeSlider.addEventListener('mouseup', () => {
+                    maxPriceInput.value = '200';
+                });
+
+                maxPriceRangeSlider.addEventListener('mouseup', () => {
+                    minPriceInput.value = '10';
+                });
+
+                document.querySelector('form').addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    document.querySelector('form').submit();
+                });
+
+                minPrice = minPriceInput.value;
+                maxPrice = maxPriceInput.value;
+
+            </script>
+
+
+            <div class="location">
+                <h3>Location</h3>
+                <ul>
+                    <li><label><input type="checkbox" name="location1" value="Lebanon, Beirut">Lebanon, Beirut</label>
+                    </li>
+                    <li><label><input type="checkbox" name="location2" value="Lebanon, Jbeil">Lebanon, Jbeil</label>
+                    </li>
+                    <li><label><input type="checkbox" name="location3" value="Lebanon, Sidon">Lebanon, Sidon</label>
+                    </li>
+                    <li><label><input type="checkbox" name="location4" value="Lebanon, Tyre">Lebanon, Tyre</label></li>
+                    <li><label><input type="checkbox" name="location5" value="Lebanon, Tripoli">Lebanon, Tripoli</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="age-range">
+                <h3>Age Range: 18 - 60+</h3>
+                <input type="range" min="18" max="60" value="18" class="slider" id="min-age-slider">
+                <input type="range" min="18" max="60" value="60" class="slider" id="max-age-slider">
+                <input type="hidden" name="minAge" value="18">
+                <input type="hidden" name="maxAge" value="60">
+            </div>
+
+            <script>
+                const minAgeRangeSlider = document.querySelector('#min-age-slider');
+                const maxAgeRangeSlider = document.querySelector('#max-age-slider');
+                const ageRangeLabel = document.querySelector('.age-range h3');
+                const minAgeInput = document.querySelector('input[name="minAge"]');
+                const maxAgeInput = document.querySelector('input[name="maxAge"]');
+
+                minAgeRangeSlider.addEventListener('input', () => {
+                    ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
+                    minAgeInput.value = minAgeRangeSlider.value;
+                });
+
+                maxAgeRangeSlider.addEventListener('input', () => {
+                    ageRangeLabel.textContent = `Age Range: ${minAgeRangeSlider.value} - ${maxAgeRangeSlider.value}+`;
+                    maxAgeInput.value = maxAgeRangeSlider.value;
+                });
+
+                minAgeRangeSlider.addEventListener('mouseup', () => {
+                    maxAgeInput.value = '60';
+                });
+
+                maxAgeRangeSlider.addEventListener('mouseup', () => {
+                    minAgeInput.value = '18';
+                });
+
+                document.querySelector('form').addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    document.querySelector('form').submit();
+                });
+
+                minAge = minAgeInput.value;
+                maxAge = maxAgeInput.value;
+
+            </script>
         </div>
-        {% endfor %}
-        {% else %}
-        <p>No results found.</p>
-        {% endif %}
+
+        <div class="container-results">
+            {% if results %}
+            {% for result in results %}
+            <div class="result">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='UPLOAD_FOLDER/' + result[3]) }}" alt="Profile Picture">
+                </div>
+                <div class="name">
+                    <h2>{{ result[0] }}</h2>
+                </div>
+                <div class="bio">
+                    <p>{{ result[1] }}</p>
+                </div>
+                <div>
+                    <a href="tutorsearch.html?username={{ result[4] }}" class="nav-link">My Profile</a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No results found.</p>
+            {% endif %}
+        </div>
     </div>
-    </body>
+</body>
 
 
 </form>
-</html>
 
+</html>

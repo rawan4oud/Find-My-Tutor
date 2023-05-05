@@ -131,6 +131,7 @@ nav ul li a:hover {
 }
 
 .filter-container {
+  flex-basis: 25%;
 position: absolute;
 transform: translate(80%,20%);
 display: flex;
