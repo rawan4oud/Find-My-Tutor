@@ -109,6 +109,10 @@ def update_tutor(username, fname, lname, password, age, gender, contact, image, 
 def home():
     return render_template("home.html")
 
+@app.route('/course.html', methods=['GET', 'POST'])
+def course():
+    return render_template("course.html")
+
 
 
 
