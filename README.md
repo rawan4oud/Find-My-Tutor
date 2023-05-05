@@ -15,6 +15,10 @@ The following are the set of features corresponding to this project:
 
 
 ## Tech Stack
-Backend: Flask, Python, & SQL
+- Python
+- Flask
+- Javascript
+- PHP
+- HTML
+- CSS
 
-Frontend: HTML & CSS
