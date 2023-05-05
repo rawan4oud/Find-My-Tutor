@@ -1611,3 +1611,22 @@ input[type="range"] {
   display: flex;
   flex-wrap: wrap;
 }
+.popup-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #f44336;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  animation-name: fade-in-out;
+  animation-duration: 10s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in-out {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
