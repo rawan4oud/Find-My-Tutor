@@ -20,109 +20,127 @@
 
 <body>
 
-  <header>
+<header>
     <nav>
-      <ul class="nav-menu" style="margin-top: 1rem;">
-        <li><a href="loggedin.html" class="nav-link">Search for tutors </a></li>
+        <ul class="nav-menu" style="margin-top: 1rem;">
+            <li><a href="loggedin.html?username={{ session['username'] }}" class="nav-link">Search for tutors </a></li>
 
-        <li><a href="editstudent.html?username={{ session['username'] }}" class="nav-link">Edit Profile</a></li>
-        <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
-      </ul>
+            <li><a href="editstudent.html?username={{ session['username'] }}" class="nav-link">Edit Profile</a></li>
+            <li><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
+        </ul>
     </nav>
-  </header>
+</header>
 
-  <section class="home" id="home">
+<section class="home" id="home">
     <div class="head_container">
-      <div class="col-rt-12">
-        <div class="Scriptcontent">
+        <div class="col-rt-12">
+            <div class="Scriptcontent">
 
-          <!-- Student Profile -->
-          <div class="student-profile py-4">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-4">
-                  <div class="card shadow-sm">
-                    <div class="card-header bg-transparent text-center">
-                      <img class="profile_img" src="/static/UPLOAD_FOLDER/{{ student['picture'] }}" alt="student dp">
-                      <h3>{{ student['fullname'] }}</h3>
+                <!-- Student Profile -->
+                <div class="student-profile py-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-transparent text-center">
+                                        <img class="profile_img" src="/static/UPLOAD_FOLDER/{{ student['picture'] }}"
+                                             alt="student dp">
+                                        <h3>{{ student['fullname'] }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-transparent border-0">
+                                        <h3 class="mb-0"><i class="far fa-clone pr-1"></i>General Information</h3>
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th width="30%">Email:</th>
+                                                <td width="2%">:</td>
+                                                <td>{{ session['username'] }}</td>
+                                            </tr>
+                                            <tr>
+                                            <tr>
+                                                <th width="30%">Age:</th>
+                                                <td width="2%">:</td>
+                                                <td>{{ student['age'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th width="30%">Gender</th>
+                                                <td width="2%">:</td>
+                                                <td>{{ student['gender'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th width="30%">Languages</th>
+                                                <td width="2%">:</td>
+                                                <td> {{ student['languages'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th width="30%">Interests</th>
+                                                <td width="2%">:</td>
+                                                <td>{{ student['interests'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th width="30%">Contact</th>
+                                                <td width="2%">:</td>
+                                                <td>{{ student['contact'] }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="card-header bg-transparent border-0">
+                                        <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Courses Taken</h3>
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <table>
+                                            <tbody>
+                                            {% for i in course %}
+                                            <tr>
+                                                <td>{{ i['coursename'] }}</td>
+                                                <td>{{ i['tutuser'] }}</td>
+                                                <td><a href="#" onclick="openFeedback()">Give Feedback</a></td>
+
+                                                <script>
+function openFeedback() {
+  var popup = window.open("", "Feedback", "width=400,height=300");
+  popup.document.write("<h1>Feedback Form</h1>");
+  popup.document.write("<form>");
+  popup.document.write("<label>Feedback:</label><br>");
+  popup.document.write("<textarea name='feedback'></textarea><br><br>");
+  popup.document.write("<button type='submit'>Submit</button>");
+  popup.document.write("</form>");
+
+  popup.document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var feedback = popup.document.querySelector("textarea[name='feedback']").value;
+    console.log(feedback); // or do whatever you want with the feedback
+    popup.close();
+  });
+}
+
+
+
+                                                </script>
+
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <div class="col-lg-8">
-                  <div class="card shadow-sm">
-                    <div class="card-header bg-transparent border-0">
-                      <h3 class="mb-0"><i class="far fa-clone pr-1"></i>General Information</h3>
-                    </div>
-                    <div class="card-body pt-0">
-                      <table class="table table-bordered">
-                        <tr>
-                          <th width="30%">Email:</th>
-                          <td width="2%">:</td>
-                          <td>{{ session['username'] }}</td>
-                        </tr>
-                        <tr>
-                        <tr>
-                          <th width="30%">Age:</th>
-                          <td width="2%">:</td>
-                          <td>{{ student['age'] }}</td>
-                        </tr>
-                        <tr>
-                          <th width="30%">Gender </th>
-                          <td width="2%">:</td>
-                          <td>{{ student['gender'] }}</td>
-                        </tr>
-                        <tr>
-                          <th width="30%">Languages</th>
-                          <td width="2%">:</td>
-                          <td> {{  student['languages'] }}</td>
-                        </tr>
-                        <tr>
-                          <th width="30%">Interests</th>
-                          <td width="2%">:</td>
-                          <td>{{  student['interests'] }}</td>
-                        </tr>
-                        <tr>
-                          <th width="30%">Contact</th>
-                          <td width="2%">:</td>
-                          <td>{{  student['contact'] }}</td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="card-header bg-transparent border-0">
-                      <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Courses Taken</h3>
-                    </div>
-                    <div class="card-body pt-0">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    </div>
-                  </div>
-                  <div style="height: 26px"></div>
-                  <div class="card shadow-sm">
-                    <div class="card-header bg-transparent border-0">
-                      <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Courses Taken</h3>
-                    </div>
-                    <div class="card-body pt-0">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
             </div>
-          </div>
-          <!-- partial -->
-
         </div>
-      </div>
 
     </div>
-  </section>
-
-
-
-  <!-- Analytics -->
+</section>
 
 </body>
 
